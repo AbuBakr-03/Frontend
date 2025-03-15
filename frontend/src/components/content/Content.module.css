@@ -1,0 +1,18 @@
+.layout {
+  display: grid;
+  grid-template-areas: "txt img";
+  grid-template-columns: 1fr 1fr;
+}
+
+.img {
+  grid-area: img;
+}
+.text {
+  grid-area: txt;
+}
+@media screen and (max-width: 768px) {
+  .layout {
+    grid-template-areas: "img" "txt";
+    grid-template-columns: 1fr;
+  }
+}

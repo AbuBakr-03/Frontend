@@ -1,0 +1,28 @@
+.container {
+  display: grid;
+  grid-template-columns: 2fr 10fr;
+  grid-template-areas: "logo links";
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  grid-area: logo;
+  align-self: center;
+}
+.links {
+  grid-area: links;
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  grid-template-areas: "normallink buttonlink";
+}
+
+.normal {
+  grid-area: normallink;
+}
+.buttonlink {
+  grid-area: buttonlink;
+}
+.button {
+  background-color: #0f172a;
+}
