@@ -205,18 +205,22 @@ const Navbar: React.FC = () => {
                 <div
                   className={`${styles.buttonlink} grid w-full grid-cols-2 justify-items-center`}
                 >
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    className={`${styles.button} w-24 rounded-md px-3 py-1 text-white hover:bg-black lg:w-32`}
-                  >
-                    <Link to={"/SignUp"}>Sign Up</Link>
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    className={`${styles.button} w-24 rounded-md px-3 py-1 text-white hover:bg-black lg:w-32`}
-                  >
-                    <Link to={"/LogIn"}>Log In</Link>
-                  </motion.button>
+                  <Link to={"/SignUp"}>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      className={`${styles.button} w-24 rounded-md px-3 py-1 text-white hover:bg-black lg:w-32`}
+                    >
+                      Sign Up
+                    </motion.button>
+                  </Link>
+                  <Link to={"/LogIn"}>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      className={`${styles.button} w-24 rounded-md px-3 py-1 text-white hover:bg-black lg:w-32`}
+                    >
+                      Log In
+                    </motion.button>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -1,6 +1,7 @@
 import styles from "../../../components/content/Content.module.css";
 import colors from "../../../styles/global.module.css";
 import img from "../../../assets/CTAImage.webp";
+import { Link } from "react-router-dom";
 const CTA: React.FC = () => {
   return (
     <section
@@ -17,11 +18,13 @@ const CTA: React.FC = () => {
               opportunities and help us shape the next era of intelligent
               workforce solutions.
             </p>
-            <button
-              className={`${colors.background} justify-self-start rounded px-6 py-2 font-semibold text-white`}
-            >
-              Join Us
-            </button>
+            <Link to={"/JoinUs"}>
+              <button
+                className={`${colors.background} justify-self-start rounded px-6 py-2 font-semibold text-white`}
+              >
+                Join Us
+              </button>
+            </Link>
           </div>
           <img
             className={`${styles.img} aspect-video justify-self-end rounded-md object-cover lg:w-8/12`}

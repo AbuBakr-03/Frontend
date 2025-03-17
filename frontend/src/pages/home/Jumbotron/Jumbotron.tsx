@@ -1,5 +1,5 @@
 import colors from "../../../styles/global.module.css";
-
+import { Link } from "react-router-dom";
 import jumbotronimg from "../../../assets/HomeJumbotron1.webp";
 const Jumbotron: React.FC = () => {
   return (
@@ -17,11 +17,14 @@ const Jumbotron: React.FC = () => {
               optimize employee management, and transform workforce experiences.
               Our technology helps you build a smarter, more agile organization.
             </p>
-            <button
-              className={`justify-self-start rounded-md bg-white px-6 py-2 font-semibold ${colors.color}`}
-            >
-              Join Us
-            </button>
+            <Link to={"/JoinUs"}>
+              <button
+                className={`justify-self-start rounded-md bg-white px-6 py-2 font-semibold ${colors.color}`}
+              >
+                {" "}
+                Join Us
+              </button>
+            </Link>
           </div>
           <img
             className={`aspect-video justify-self-end rounded-md object-cover lg:w-8/12`}
