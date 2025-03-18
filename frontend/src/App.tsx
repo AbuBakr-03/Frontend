@@ -13,6 +13,7 @@ import Forgotpassword from "./pages/forgotPassword/Forgotpassword";
 import Personalinformation from "./pages/dashboard/personalInformation/Personalinformation";
 import Jobopening from "./pages/dashboard/jobOpening/Jobopening";
 import Alljobs from "./pages/dashboard/allJobs/Alljobs";
+import Userdashboard from "./pages/userDashboard/Userdashboard";
 function App() {
   return (
     <>
@@ -37,6 +38,17 @@ function App() {
           ></Route>
           <Route path="CJO" element={<Jobopening></Jobopening>}></Route>
           <Route path="AJO" element={<Alljobs></Alljobs>}></Route>
+          <Route path="IS" element={<Alljobs></Alljobs>}></Route>
+          <Route path="IR" element={<Alljobs></Alljobs>}></Route>
+          <Route path="PC" element={<Alljobs></Alljobs>}></Route>
+        </Route>
+        <Route path="/UserDashboard" element={<Userdashboard></Userdashboard>}>
+          <Route
+            path="PI"
+            element={<Personalinformation></Personalinformation>}
+          ></Route>
+          <Route path="SA" element={<Alljobs></Alljobs>}></Route>
+          <Route path="IR" element={<Alljobs></Alljobs>}></Route>
         </Route>
       </Routes>
     </>

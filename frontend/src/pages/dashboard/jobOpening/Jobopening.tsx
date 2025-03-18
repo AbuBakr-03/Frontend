@@ -111,6 +111,8 @@ const Jobopening: React.FC = () => {
 
           <div className="grid gap-2">
             <DatePickerWithRange></DatePickerWithRange>
+            {/*so forms created using react hook form and zod are uncontrolled
+            and to use controlled components like shadcn datepicker within react hook form, react hook form provides us the controller. we will implement this in the future*/}
           </div>
 
           <div className="grid gap-2">
