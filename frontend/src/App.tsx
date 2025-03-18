@@ -10,6 +10,9 @@ import Login from "./pages/logIn/Login";
 import AboutJob from "./pages/aboutjob/Aboutjob";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Forgotpassword from "./pages/forgotPassword/Forgotpassword";
+import Personalinformation from "./pages/dashboard/personalInformation/Personalinformation";
+import Jobopening from "./pages/dashboard/jobOpening/Jobopening";
+import Alljobs from "./pages/dashboard/allJobs/Alljobs";
 function App() {
   return (
     <>
@@ -27,7 +30,14 @@ function App() {
           ></Route>
           <Route path="/AboutJob" element={<AboutJob></AboutJob>}></Route>
         </Route>
-        <Route path="/Dashboard" element={<Dashboard></Dashboard>}></Route>
+        <Route path="/Dashboard" element={<Dashboard></Dashboard>}>
+          <Route
+            path="PI"
+            element={<Personalinformation></Personalinformation>}
+          ></Route>
+          <Route path="CJO" element={<Jobopening></Jobopening>}></Route>
+          <Route path="AJO" element={<Alljobs></Alljobs>}></Route>
+        </Route>
       </Routes>
     </>
   );
