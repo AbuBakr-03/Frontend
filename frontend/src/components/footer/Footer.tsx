@@ -5,19 +5,19 @@ const Footer: React.FC = () => {
     <footer className="grid w-full place-items-center">
       <div className={`${styles.container} w-9/12 gap-4 py-8`}>
         <ul className={`grid grid-cols-4 place-items-center lg:grid-cols-8`}>
-          <li>
+          <li className="hover:underline ">
             <Link to={"/"}>Home</Link>
           </li>
           <li>|</li>
-          <li>
+          <li className="hover:underline">
             <Link to={"/WhyUs"}>Why Us?</Link>
           </li>
           <li>|</li>
-          <li>
+          <li className="hover:underline">
             <Link to={"/Perks"}>Perks</Link>
           </li>
           <li>|</li>
-          <li>
+          <li className="hover:underline">
             <Link to={"/JoinUs"}>Join Us</Link>
           </li>
           <li>|</li>

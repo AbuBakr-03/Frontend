@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Users, MapPin, ArrowRight } from "lucide-react";
 type proptypes = {
   heading: string;
@@ -29,11 +30,12 @@ const Jobcard: React.FC<proptypes> = ({ heading, team, location }) => {
         </div>
       </div>
 
-      <div
+      <Link
+        to={"/AboutJob"}
         className={`mr-1 cursor-pointer justify-self-end rounded-full bg-black p-2`}
       >
         <ArrowRight size={27} color="#ffffff"></ArrowRight>
-      </div>
+      </Link>
     </div>
   );
 };

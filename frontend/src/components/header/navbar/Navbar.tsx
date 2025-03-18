@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
     <>
       {mobile ? (
         <>
-          <nav className="fixed left-0 top-0 z-50 grid w-full grid-cols-3 items-center bg-white px-4 py-2 shadow-md">
+          <nav className="fixed left-0 top-0 z-50 grid w-full grid-cols-3 items-center bg-white px-4 py-1 shadow-md">
             <div className="grid justify-start">
               <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                 <Menu
@@ -58,7 +58,7 @@ const Navbar: React.FC = () => {
                 onClick={() => {
                   navigate("/");
                 }}
-                className={`aspect-video h-16 cursor-pointer object-cover`}
+                className={`aspect-video h-14 cursor-pointer object-cover`}
                 src={Logo}
                 alt="Smart HR"
               />
@@ -76,12 +76,12 @@ const Navbar: React.FC = () => {
                   className="fixed left-0 top-0 z-50 h-full w-4/5 max-w-xs bg-white shadow-lg"
                 >
                   <div className="flex items-center justify-between border-b p-4">
-                    <p className="pl-2 font-inter text-3xl font-medium">Menu</p>
+                    <p className="pl-2 font-inter text-xl font-medium">Menu</p>
                     <button onClick={() => handleClickOutside()}>
-                      <X size={28} />
+                      <X size={24} />
                     </button>
                   </div>
-                  <ul className="grid gap-4 p-4 font-inter text-2xl">
+                  <ul className="grid gap-6 p-4 font-inter">
                     <li
                       className={`rounded border-b-2 pl-2 transition-all duration-300 hover:bg-slate-200`}
                     >
@@ -163,7 +163,7 @@ const Navbar: React.FC = () => {
         </>
       ) : (
         <>
-          <nav className={`w-10/12 font-inter font-semibold`}>
+          <nav className={`w-10/12 font-inter text-sm font-semibold`}>
             <div className={`${styles.container} py-4 font-medium`}>
               {/* <img
                 onClick={() => {
@@ -208,7 +208,7 @@ const Navbar: React.FC = () => {
                   <Link to={"/SignUp"}>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
-                      className={`${styles.button} w-24 rounded-md px-3 py-1 text-white hover:bg-black lg:w-32`}
+                      className={`${styles.button} w-24 rounded-md px-3 py-2 text-white hover:bg-black`}
                     >
                       Sign Up
                     </motion.button>
@@ -216,7 +216,7 @@ const Navbar: React.FC = () => {
                   <Link to={"/LogIn"}>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
-                      className={`${styles.button} w-24 rounded-md px-3 py-1 text-white hover:bg-black lg:w-32`}
+                      className={`${styles.button} w-24 rounded-md px-3 py-2 text-white hover:bg-black`}
                     >
                       Log In
                     </motion.button>

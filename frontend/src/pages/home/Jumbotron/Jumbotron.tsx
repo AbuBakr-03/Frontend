@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import colors from "../../../styles/global.module.css";
 import { Link } from "react-router-dom";
 import jumbotronimg from "../../../assets/HomeJumbotron1.webp";
@@ -18,12 +19,13 @@ const Jumbotron: React.FC = () => {
               Our technology helps you build a smarter, more agile organization.
             </p>
             <Link to={"/JoinUs"}>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
                 className={`justify-self-start rounded-md bg-white px-6 py-2 font-semibold ${colors.color}`}
               >
                 {" "}
                 Join Us
-              </button>
+              </motion.button>
             </Link>
           </div>
           <img

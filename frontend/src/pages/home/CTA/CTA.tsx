@@ -1,4 +1,5 @@
 import styles from "../../../components/content/Content.module.css";
+import { motion } from "framer-motion";
 import colors from "../../../styles/global.module.css";
 import img from "../../../assets/CTAImage.webp";
 import { Link } from "react-router-dom";
@@ -19,11 +20,12 @@ const CTA: React.FC = () => {
               workforce solutions.
             </p>
             <Link to={"/JoinUs"}>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
                 className={`${colors.background} justify-self-start rounded px-6 py-2 font-semibold text-white`}
               >
                 Join Us
-              </button>
+              </motion.button>
             </Link>
           </div>
           <img
