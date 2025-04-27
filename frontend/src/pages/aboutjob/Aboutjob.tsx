@@ -41,15 +41,14 @@ const AboutJob: React.FC = () => {
       .max(1000, {
         message: "Cover letter must be at most 1000 characters long.",
       }),
-    // file: z
-    //   .any()
-    //   .refine((files) => files?.[0], { message: "Resume file is required." })
-    //   .refine((files) => files?.[0]?.type === "application/pdf", {
-    //     message: "Only PDF files are accepted.",
-    //   })
-    //   .refine((files) => files?.[0]?.size <= 5 * 1024 * 1024, {
-    //     message: "Resume file must be smaller than 5MB.",
-    //   }),
+    resume: z
+      .instanceof(File)
+      .refine((file) => file.size <= 5 * 1024 * 1024, {
+        message: "Resume file must be smaller than 5MB.",
+      })
+      .refine((file) => file.type === "application/pdf", {
+        message: "Only PDF files are accepted.",
+      }),
   });
 
   type fieldTypes = z.infer<typeof schema>;
@@ -62,17 +61,29 @@ const AboutJob: React.FC = () => {
   });
   const [open, setOpen] = useState<boolean>(false);
   const submitter: SubmitHandler<fieldTypes> = (data) => {
-    postApplicationMutation.mutate(
-      { ...data, job_id: Number(id) },
-      {
-        onSuccess: () => {
-          console.log(data);
-          toast("Application Submitted", {
-            description: "Your application has been successfully submitted.",
-          });
-        },
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("residence", data.residence);
+    formData.append("cover_letter", data.cover_letter);
+    formData.append("job_id", id?.toString() || "");
+    if (data.resume) {
+      formData.append("resume", data.resume);
+    }
+    postApplicationMutation.mutate(formData, {
+      onSuccess: () => {
+        toast.success("Application Submitted", {
+          description:
+            "Your application has been successfully submitted and is being processed.",
+        });
       },
-    );
+      onError: (error) => {
+        toast.error("Error Submitting Application", {
+          description: "Please try again or contact support.",
+        });
+        console.error(error);
+      },
+    });
   };
   const handlechange = () => {
     setOpen(false);
@@ -147,23 +158,27 @@ const AboutJob: React.FC = () => {
                   </p>
                 )}
               </div>
-              {/* <div className="grid gap-2">
-                <Label htmlFor="file">Resume/CV</Label>
+
+              <div className="grid gap-2">
+                <label className="text-sm font-semibold" htmlFor="resume">
+                  Resume/CV (PDF)
+                </label>
                 <input
-                  {...register("file")}
+                  {...register("resume")}
                   className="flex w-full items-center rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                  id="file"
+                  id="resume"
                   type="file"
+                  accept=".pdf"
                 ></input>
                 <p className="text-xs text-slate-500">
-                  Accepted formats: PDF, DOC, DOCX. Max size: 5MB
+                  Upload your resume in PDF format. Max size: 5MB
                 </p>
-                {errors.file && (
+                {errors.resume && (
                   <p className="text-sm text-red-500">
-                    {errors.file.message?.toString()}
+                    {errors.resume.message?.toString()}
                   </p>
                 )}
-              </div> */}
+              </div>
               <div className="grid gap-2">
                 <label className="text-sm font-semibold" htmlFor="cover_letter">
                   Cover Letter
@@ -222,7 +237,7 @@ const AboutJob: React.FC = () => {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              <p className="text-xs text-center text-slate-500">
+              <p className="text-center text-xs text-slate-500">
                 By applying, you confirm that all information provided is
                 accurate and complete.
               </p>

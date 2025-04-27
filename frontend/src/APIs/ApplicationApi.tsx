@@ -2,12 +2,15 @@ import axios from "axios";
 
 const API_URL = "http://127.0.0.1:8000/api/application/";
 
+// frontend/src/APIs/ApplicationApi.tsx - Update types
 type applicationType = {
   id: number;
   name: string;
   email: string;
   residence: string;
   cover_letter: string;
+  resume: File | null;
+  match_score: number | null;
   job: {
     id: number;
     title: string;
@@ -34,16 +37,17 @@ type applicationType = {
   };
 };
 
+// type newApplicationType = {
+//   name: string;
+//   email: string;
+//   residence: string;
+//   cover_letter: string;
+//   resume?: File;
+//   job_id: number;
+// };
+
 type updateApplicationType = {
   id: number;
-  name: string;
-  email: string;
-  residence: string;
-  cover_letter: string;
-  job_id: number;
-};
-
-type newApplicationType = {
   name: string;
   email: string;
   residence: string;
@@ -80,10 +84,13 @@ export const deleteApplication = async (id: number): Promise<void> => {
 };
 
 export const postApplication = async (
-  company: newApplicationType,
+  formData: FormData,
 ): Promise<applicationType> => {
-  const { data } = await axios.post(API_URL, company, {
-    headers: getAuthHeader(),
+  const { data } = await axios.post(API_URL, formData, {
+    headers: {
+      ...getAuthHeader(),
+      "Content-Type": "multipart/form-data",
+    },
   });
   return data;
 };
