@@ -42,7 +42,7 @@ function App() {
             element={<Resetpassword></Resetpassword>}
           ></Route>
           <Route
-            path="/reset-password/:id"
+            path="/reset-password/:uid/:token"
             element={<Resetpassword></Resetpassword>}
           ></Route>
           <Route

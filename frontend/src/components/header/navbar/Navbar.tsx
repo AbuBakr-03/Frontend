@@ -148,32 +148,163 @@ const Navbar: React.FC = () => {
                   <ul className="mb-4 grid gap-4 p-4 font-inter">
                     {linkslist}
                   </ul>
-                  <div className="grid place-items-center gap-2">
-                    <button
-                      className={`w-11/12 rounded border border-slate-300 py-2 pl-2 pr-2 text-center text-sm font-semibold`}
-                    >
-                      <Link
-                        onClick={() => {
-                          handleClickOutside();
-                        }}
-                        to={"/sign-up"}
+                  {auth.user?.is_recruiter || auth.user?.is_superuser ? (
+                    <>
+                      <div className="grid place-items-center gap-2">
+                        <button
+                          className={`w-11/12 rounded border border-slate-300 py-2 pl-2 pr-2 text-center text-sm font-semibold`}
+                        >
+                          <Link
+                            onClick={() => {
+                              handleClickOutside();
+                            }}
+                            to={"/dashboard"}
+                          >
+                            My Profile
+                          </Link>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setOpen(true);
+                          }}
+                          className={`w-11/12 rounded border border-slate-300 py-2 pl-2 pr-2 text-center text-sm font-semibold text-red-600`}
+                        >
+                          Log Out
+                        </button>
+                      </div>
+                      <AlertDialog open={open} onOpenChange={setOpen}>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Log out?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to Log out?
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => {
+                                logout();
+                                postLogoutQuery.mutate();
+                                setOpen(false);
+                                navigate("/sign-up");
+                              }}
+                            >
+                              Log Out
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </>
+                  ) : auth.user?.id ? (
+                    <>
+                      <div className="grid place-items-center gap-2">
+                        <button
+                          className={`w-11/12 rounded border border-slate-300 py-2 pl-2 pr-2 text-center text-sm font-semibold`}
+                        >
+                          <Link
+                            onClick={() => {
+                              handleClickOutside();
+                            }}
+                            to={"/dashboard"}
+                          >
+                            My Profile
+                          </Link>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setOpen(true);
+                          }}
+                          className={`w-11/12 rounded border border-slate-300 py-2 pl-2 pr-2 text-center text-sm font-semibold text-red-600`}
+                        >
+                          Log Out
+                        </button>
+                        <button
+                          onClick={() => {
+                            setOpen2(true);
+                          }}
+                          className={`w-11/12 rounded border border-slate-300 bg-black py-2 pl-2 pr-2 text-center text-sm font-semibold text-white`}
+                        >
+                          Become a Recruiter
+                        </button>
+                      </div>
+                      <AlertDialog open={open} onOpenChange={setOpen}>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Log out?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to Log out?
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => {
+                                logout();
+                                postLogoutQuery.mutate();
+                                setOpen(false);
+                                navigate("/sign-up");
+                              }}
+                            >
+                              Log Out
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                      <AlertDialog open={open2} onOpenChange={setOpen2}>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Become a Recruiter?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Send a request to the admins to make you a
+                              recruiter and you can start reecruiting.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => {
+                                console.log(postRecruiterQuery.data);
+                                postRecruiterQuery.mutate();
+                                setOpen2(false);
+                              }}
+                            >
+                              Send Request
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </>
+                  ) : (
+                    <div className="grid place-items-center gap-2">
+                      <button
+                        className={`w-11/12 rounded border border-slate-300 py-2 pl-2 pr-2 text-center text-sm font-semibold`}
                       >
-                        Sign Up
-                      </Link>
-                    </button>
-                    <button
-                      className={`w-11/12 rounded bg-black py-2 pl-2 pr-2 text-center text-sm font-semibold text-white`}
-                    >
-                      <Link
-                        onClick={() => {
-                          handleClickOutside();
-                        }}
-                        to={"/log-in"}
+                        <Link
+                          onClick={() => {
+                            handleClickOutside();
+                          }}
+                          to={"/sign-up"}
+                        >
+                          Sign Up
+                        </Link>
+                      </button>
+                      <button
+                        className={`w-11/12 rounded bg-black py-2 pl-2 pr-2 text-center text-sm font-semibold text-white`}
                       >
-                        Log In
-                      </Link>
-                    </button>
-                  </div>
+                        <Link
+                          onClick={() => {
+                            handleClickOutside();
+                          }}
+                          to={"/log-in"}
+                        >
+                          Log In
+                        </Link>
+                      </button>
+                    </div>
+                  )}
                 </motion.div>
               </>
             )}
@@ -250,7 +381,7 @@ const Navbar: React.FC = () => {
                     </AlertDialogContent>
                   </AlertDialog>
                 </>
-              ) : auth.user ? (
+              ) : auth.user?.id ? (
                 <>
                   <NavigationMenu>
                     <NavigationMenuList>

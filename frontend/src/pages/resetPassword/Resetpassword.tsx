@@ -1,11 +1,14 @@
 import colors from "../../styles/global.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast, Toaster } from "sonner";
+import axios from "axios";
 
 const Resetpassword: React.FC = () => {
+  const { uid, token } = useParams();
+  const navigate = useNavigate();
   const schema = z.object({
     password: z
       .string()
@@ -21,10 +24,23 @@ const Resetpassword: React.FC = () => {
     formState: { errors },
   } = useForm<fieldTypes>({ resolver: zodResolver(schema) });
   const submitter: SubmitHandler<fieldTypes> = (data) => {
-    console.log(data);
-    toast("Password Reset!", {
-      description: "Your password has been changed.",
-    });
+    axios
+      .post("http://127.0.0.1:8000/auth/users/reset_password_confirm/", {
+        uid,
+        token,
+        new_password: data.password,
+      })
+      .then(() => {
+        toast.success("Password Reset!", {
+          description: "Your password has been changed.",
+        });
+        setTimeout(() => navigate("/log-in"), 2000);
+      })
+      .catch((error) => {
+        toast.error("Error resetting password", {
+          description: error.response?.data?.detail || "Please try again",
+        });
+      });
   };
   return (
     <>

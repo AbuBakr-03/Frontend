@@ -2,121 +2,144 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
+// Define User type to improve type safety
+type User = {
+  id: number | null;
+  email: string | null;
+  is_recruiter: boolean;
+  is_staff: boolean;
+  is_superuser: boolean;
+};
+
+// Define Auth state type
+type AuthState = {
+  access: string | null;
+  refresh: string | null;
+  user: User | null;
+};
+
+// Define AuthContext type with proper typing
 type AuthContextType = {
-  auth: {
-    access: string | null;
-    refresh: string | null;
-    user: {
-      id: number | null;
-      email: string | null;
-      is_recruiter: boolean;
-      is_staff: boolean;
-      is_superuser: boolean;
-    } | null;
-  };
-  setAuth: React.Dispatch<
-    React.SetStateAction<{
-      access: string | null;
-      refresh: string | null;
-      user: {
-        id: number | null;
-        email: string | null;
-        is_recruiter: boolean;
-        is_staff: boolean;
-        is_superuser: boolean;
-      } | null;
-    }>
-  >;
+  auth: AuthState;
+  setAuth: React.Dispatch<React.SetStateAction<AuthState>>;
   logout: () => void;
+  isAuthenticated: boolean; // Added helper property
+  isAdmin: boolean; // Added helper property
+  isRecruiter: boolean; // Added helper property
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-type PropTypes = {
+// Helper functions to work with localStorage
+const storage = {
+  // Get item with type conversion helpers
+  get: {
+    string: (key: string): string | null => localStorage.getItem(key),
+    boolean: (key: string): boolean => localStorage.getItem(key) === "true",
+    number: (key: string): number | null => {
+      const value = localStorage.getItem(key);
+      return value ? parseInt(value, 10) : null;
+    },
+  },
+  // Save item if different from current value to minimize writes
+  save: (key: string, value: string | null): void => {
+    if (value === null) {
+      localStorage.removeItem(key);
+    } else if (localStorage.getItem(key) !== value) {
+      localStorage.setItem(key, value);
+    }
+  },
+  // Remove item
+  remove: (key: string): void => {
+    localStorage.removeItem(key);
+  },
+};
+
+type AuthProviderProps = {
   children: React.ReactNode;
 };
 
-const AuthProvider: React.FC<PropTypes> = ({ children }) => {
-  const [auth, setAuth] = useState<{
-    access: string | null;
-    refresh: string | null;
-    user: {
-      id: number | null;
-      email: string | null;
-      is_recruiter: boolean;
-      is_staff: boolean;
-      is_superuser: boolean;
-    } | null;
-  }>({
-    access: localStorage.getItem("access_token"),
-    refresh: localStorage.getItem("refresh_token"),
-    user: {
-      id: localStorage.getItem("user_id")
-        ? parseInt(localStorage.getItem("user_id") || "0")
-        : null,
-      email: localStorage.getItem("user_email"),
-      is_recruiter: localStorage.getItem("user_is_recruiter") === "true",
-      is_staff: localStorage.getItem("user_is_staff") === "true",
-      is_superuser: localStorage.getItem("user_is_superuser") === "true",
-    },
+const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  // Initialize state from localStorage with proper type conversion
+  const [auth, setAuth] = useState<AuthState>({
+    access: storage.get.string("access_token"),
+    refresh: storage.get.string("refresh_token"),
+    user: storage.get.string("user_id")
+      ? {
+          id: storage.get.number("user_id"),
+          email: storage.get.string("user_email"),
+          is_recruiter: storage.get.boolean("user_is_recruiter"),
+          is_staff: storage.get.boolean("user_is_staff"),
+          is_superuser: storage.get.boolean("user_is_superuser"),
+        }
+      : null,
   });
 
-  // Store auth details in localStorage whenever auth changes
+  // Derived states
+  const isAuthenticated = !!auth.access && !!auth.user;
+  const isAdmin = isAuthenticated && !!auth.user?.is_superuser;
+  const isRecruiter = isAuthenticated && !!auth.user?.is_recruiter;
+
+  // Update localStorage whenever auth changes
   useEffect(() => {
     if (auth.access && auth.refresh && auth.user) {
-      // Optimize storage to avoid redundant writes
-      if (localStorage.getItem("access_token") !== auth.access) {
-        localStorage.setItem("access_token", auth.access);
+      storage.save("access_token", auth.access);
+      storage.save("refresh_token", auth.refresh);
+
+      if (auth.user.id !== null) {
+        storage.save("user_id", auth.user.id.toString());
       }
-      if (localStorage.getItem("refresh_token") !== auth.refresh) {
-        localStorage.setItem("refresh_token", auth.refresh);
-      }
-      if (
-        auth.user.id !== null &&
-        localStorage.getItem("user_id") !== auth.user.id.toString()
-      ) {
-        localStorage.setItem("user_id", auth.user.id.toString());
-      }
-      if (localStorage.getItem("user_email") !== auth.user.email) {
-        localStorage.setItem("user_email", auth.user.email || "");
-      }
-      localStorage.setItem(
-        "user_is_recruiter",
-        auth.user.is_recruiter.toString(),
-      );
-      localStorage.setItem("user_is_staff", auth.user.is_staff.toString());
-      localStorage.setItem(
-        "user_is_superuser",
-        auth.user.is_superuser.toString(),
-      );
+
+      storage.save("user_email", auth.user.email || "");
+      storage.save("user_is_recruiter", auth.user.is_recruiter.toString());
+      storage.save("user_is_staff", auth.user.is_staff.toString());
+      storage.save("user_is_superuser", auth.user.is_superuser.toString());
     }
   }, [auth]);
 
+  // Logout function clears all auth data
   const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("user_id");
-    localStorage.removeItem("user_email");
-    localStorage.removeItem("user_is_recruiter");
-    localStorage.removeItem("user_is_staff");
-    localStorage.removeItem("user_is_superuser");
+    // Clear all auth-related localStorage items
+    const keysToRemove = [
+      "access_token",
+      "refresh_token",
+      "user_id",
+      "user_email",
+      "user_is_recruiter",
+      "user_is_staff",
+      "user_is_superuser",
+    ];
+
+    keysToRemove.forEach((key) => storage.remove(key));
+
+    // Reset auth state
     setAuth({
       access: null,
       refresh: null,
       user: null,
     });
+
     toast.success("Successfully logged out! 👋");
   };
 
+  // Create context value with derived properties
+  const contextValue = {
+    auth,
+    setAuth,
+    logout,
+    isAuthenticated,
+    isAdmin,
+    isRecruiter,
+  };
+
   return (
-    <AuthContext.Provider value={{ auth, setAuth, logout }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 
 export default AuthProvider;
 
+// Custom hook for accessing auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

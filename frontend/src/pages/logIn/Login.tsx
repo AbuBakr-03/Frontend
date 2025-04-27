@@ -49,7 +49,7 @@ const Login: React.FC = () => {
           description: "You’re now logged in and ready to explore.",
         });
         reset();
-        navigateTo("/home");
+        navigateTo("/");
       },
       onError: (error) => {
         // Handle error
