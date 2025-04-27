@@ -48,10 +48,15 @@ export const columns = (
     accessorKey: "cover_letter",
     header: () => <div className="text-center">Cover Letter</div>,
   },
-
+  {
+    accessorKey: "status",
+    header: () => <div className="text-center">Status</div>,
+    cell: ({ row }) => {
+      return <div className="text-center">{row.original.status}</div>;
+    },
+  },
   {
     id: "actions",
-
     cell: ({ row }) => {
       return (
         <Actionscell

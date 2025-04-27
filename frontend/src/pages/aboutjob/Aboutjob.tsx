@@ -42,12 +42,15 @@ const AboutJob: React.FC = () => {
         message: "Cover letter must be at most 1000 characters long.",
       }),
     resume: z
-      .instanceof(File)
-      .refine((file) => file.size <= 5 * 1024 * 1024, {
-        message: "Resume file must be smaller than 5MB.",
+      .any()
+      .refine((files) => files?.[0], {
+        message: "Resume file is required.",
       })
-      .refine((file) => file.type === "application/pdf", {
+      .refine((files) => files?.[0]?.type === "application/pdf", {
         message: "Only PDF files are accepted.",
+      })
+      .refine((files) => files?.[0]?.size <= 5 * 1024 * 1024, {
+        message: "Resume file must be smaller than 5MB.",
       }),
   });
 
@@ -67,8 +70,8 @@ const AboutJob: React.FC = () => {
     formData.append("residence", data.residence);
     formData.append("cover_letter", data.cover_letter);
     formData.append("job_id", id?.toString() || "");
-    if (data.resume) {
-      formData.append("resume", data.resume);
+    if (data.resume?.[0]) {
+      formData.append("resume", data.resume[0]);
     }
     postApplicationMutation.mutate(formData, {
       onSuccess: () => {

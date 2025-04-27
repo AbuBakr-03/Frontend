@@ -84,7 +84,6 @@ const Createjob = () => {
       responsiblities: "",
       qualification: "",
       nice_to_haves: "",
-      recruiter: 2,
     },
   });
   const companyOptions = companyData?.results.map((x) => {
@@ -112,7 +111,6 @@ const Createjob = () => {
         qualification: jobData.qualification,
         responsiblities: jobData.responsiblities,
         nice_to_haves: jobData.nice_to_haves,
-        recruiter: 2,
       });
     }
   }, [jobData, form]);
@@ -126,7 +124,6 @@ const Createjob = () => {
           id: Number(id),
           department_id: Number(data.department_id),
           company_id: Number(data.company_id),
-          recruiter: 2,
         },
         {
           onSuccess: () => {
@@ -148,7 +145,6 @@ const Createjob = () => {
           ...data,
           department_id: Number(data.department_id),
           company_id: Number(data.company_id),
-          recruiter: 2,
         },
         {
           onSuccess: () => {
