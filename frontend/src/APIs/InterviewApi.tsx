@@ -38,17 +38,20 @@ type interviewType = {
     title: string;
     slug: string;
   };
+  meeting_link: string | null;
 };
 
 type newInterviewType = {
   application_id: number;
   date?: string | null;
+  generate_link?: boolean;
 };
 
 type updateInterviewType = {
   id: number;
   application_id: number;
   date?: string | null;
+  generate_link?: boolean;
 };
 
 type listInterviewType = {
@@ -94,5 +97,16 @@ export const putInterview = async (
   const { data } = await axios.put(`${API_URL}${interview.id}/`, interview, {
     headers: getAuthHeader(),
   });
+  return data;
+};
+
+export const generateMeetingLink = async (
+  id: number,
+): Promise<{ meeting_link: string }> => {
+  const { data } = await axios.post(
+    `${API_URL}${id}/generate-meeting/`,
+    {},
+    { headers: getAuthHeader() },
+  );
   return data;
 };

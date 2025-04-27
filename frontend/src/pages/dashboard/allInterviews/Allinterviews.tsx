@@ -5,7 +5,11 @@ import { useInterview } from "../../../hooks/useInterview";
 import Loader from "../../../components/loader/Loader";
 
 const Allinterviews = () => {
-  const { interviewQueries, deleteInterviewMutation } = useInterview();
+  const {
+    interviewQueries,
+    deleteInterviewMutation,
+    generateMeetingLinkMutation,
+  } = useInterview();
   const { data, isLoading } = interviewQueries;
 
   if (isLoading) {
@@ -27,7 +31,23 @@ const Allinterviews = () => {
     });
   };
 
-  const newcolumns = columns(handleDelete);
+  const handleGenerateLink = (id: number) => {
+    generateMeetingLinkMutation.mutate(id, {
+      onSuccess: (data) => {
+        interviewQueries.refetch();
+        toast("Link Generated!", {
+          description: "Video conference link has been created successfully.",
+        });
+      },
+      onError: () => {
+        toast.error("Error!", {
+          description: "Could not generate meeting link. Please try again.",
+        });
+      },
+    });
+  };
+
+  const newcolumns = columns(handleDelete, handleGenerateLink);
 
   // Transform API data to match the table columns
   const transformedData = data.results.map((interview) => ({
@@ -37,6 +57,7 @@ const Allinterviews = () => {
     application_email: interview.application.email,
     date: interview.date,
     result: interview.result.title,
+    meeting_link: interview.meeting_link,
   }));
 
   return (

@@ -1,7 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Video, Link as LinkIcon, Copy } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import Actionscell from "../../../components/table/Actionscell";
+import { toast } from "sonner";
 
 export type interviewType = {
   id: number;
@@ -10,10 +11,12 @@ export type interviewType = {
   application_email: string;
   date: string | null;
   result: string;
+  meeting_link: string | null;
 };
 
 export const columns = (
   onDelete: (id: number) => void,
+  onGenerateLink: (id: number) => void,
 ): ColumnDef<interviewType>[] => [
   {
     accessorKey: "id",
@@ -58,6 +61,53 @@ export const columns = (
   {
     accessorKey: "result",
     header: () => <div className="text-center">Result</div>,
+  },
+  {
+    accessorKey: "meeting_link",
+    header: () => <div className="text-center">Interview Link</div>,
+    cell: ({ row }) => {
+      const link = row.getValue("meeting_link");
+
+      if (!link) {
+        return (
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onGenerateLink(row.original.id)}
+              className="flex items-center gap-1"
+            >
+              <Video className="h-4 w-4" />
+              <span>Generate Link</span>
+            </Button>
+          </div>
+        );
+      }
+
+      return (
+        <div className="flex items-center justify-center gap-2">
+          <a
+            href={link as string}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline"
+          >
+            <LinkIcon className="h-4 w-4" />
+            <span>Join Meeting</span>
+          </a>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              navigator.clipboard.writeText(link as string);
+              toast.success("Link copied to clipboard!");
+            }}
+          >
+            <Copy className="h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
   },
   {
     id: "actions",

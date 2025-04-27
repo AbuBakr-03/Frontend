@@ -27,6 +27,7 @@ import Createinterview from "./pages/dashboard/createInterview/Createinterview";
 import { Toaster } from "sonner";
 import Scrolltotop from "./components/scrollToTop/Scrolltotop";
 import Resetpassword from "./pages/resetPassword/Resetpassword";
+import Videomeeting from "./components/videoMeeting/Videomeeting";
 function App() {
   return (
     <>
@@ -39,6 +40,8 @@ function App() {
           <Route path="/join-us" element={<JoinUs2></JoinUs2>}></Route>
           <Route path="/sign-up" element={<Signup></Signup>}></Route>
           <Route path="/log-in" element={<Login></Login>}></Route>
+          <Route path="/meeting/:meetingId" element={<Videomeeting />} />
+
           <Route
             path="/reset-password"
             element={<Resetpassword></Resetpassword>}

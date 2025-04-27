@@ -4,6 +4,7 @@ import {
   getInterviews,
   postInterview,
   putInterview,
+  generateMeetingLink,
 } from "../APIs/InterviewApi";
 
 export const useInterview = () => {
@@ -30,10 +31,17 @@ export const useInterview = () => {
       queryClient.invalidateQueries({ queryKey: ["Interviews"] });
     },
   });
+  const generateMeetingLinkMutation = useMutation({
+    mutationFn: generateMeetingLink,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Interviews"] });
+    },
+  });
   return {
     interviewQueries,
     deleteInterviewMutation,
     postInterviewMutation,
     putInterviewMutation,
+    generateMeetingLinkMutation,
   };
 };
