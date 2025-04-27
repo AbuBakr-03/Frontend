@@ -1,7 +1,7 @@
 import styles from "./Aboutjob.module.css";
 
-import { Label } from "../../components/ui/label";
-import { Checkbox } from "../../components/ui/checkbox";
+// import { Label } from "../../components/ui/label";
+//import { Checkbox } from "../../components/ui/checkbox";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,31 +20,38 @@ import {
   AlertDialogTrigger,
 } from "../../components/ui/alert-dialog";
 import { useState } from "react";
+import { useApplication } from "../../hooks/useApplication";
+import { useParams } from "react-router-dom";
 const AboutJob: React.FC = () => {
+  const { postApplicationMutation } = useApplication();
+  const { id } = useParams();
   const schema = z.object({
-    name: z.string().min(8, "Name must contain at least 8 letters"),
-    email: z.string().email(),
+    name: z
+      .string()
+      .min(8, { message: "Name must be at least 8 characters long." })
+      .max(50, { message: "Name must be at most 50 characters long." }),
+    email: z.string().email({ message: "Please enter a valid email address." }),
     residence: z
       .string()
-      .min(8, "Residence must contain at least 8 characters"),
-    letter: z.string().min(20, "Cover Letter must contain at least 20 letters"),
-    file: z
-      .any()
-      .refine((files) => files?.[0], "File is required")
-      .refine(
-        (files) => files?.[0]?.size < 5 * 1024 * 1024,
-        "File size must be less than 5MB",
-      )
-      .refine(
-        (files) =>
-          [
-            "application/pdf",
-            "application/msword",
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-          ].includes(files?.[0]?.type),
-        "Only PDF, DOC, and DOCX files are allowed",
-      ),
+      .min(8, { message: "Residence must be at least 8 characters long." })
+      .max(100, { message: "Residence must be at most 100 characters long." }),
+    cover_letter: z
+      .string()
+      .min(20, { message: "Cover letter must be at least 20 characters long." })
+      .max(1000, {
+        message: "Cover letter must be at most 1000 characters long.",
+      }),
+    // file: z
+    //   .any()
+    //   .refine((files) => files?.[0], { message: "Resume file is required." })
+    //   .refine((files) => files?.[0]?.type === "application/pdf", {
+    //     message: "Only PDF files are accepted.",
+    //   })
+    //   .refine((files) => files?.[0]?.size <= 5 * 1024 * 1024, {
+    //     message: "Resume file must be smaller than 5MB.",
+    //   }),
   });
+
   type fieldTypes = z.infer<typeof schema>;
   const {
     register,
@@ -55,10 +62,17 @@ const AboutJob: React.FC = () => {
   });
   const [open, setOpen] = useState<boolean>(false);
   const submitter: SubmitHandler<fieldTypes> = (data) => {
-    console.log(data);
-    toast("Application Submitted", {
-      description: "Your application has been successfully submitted.",
-    });
+    postApplicationMutation.mutate(
+      { ...data, job_id: Number(id) },
+      {
+        onSuccess: () => {
+          console.log(data);
+          toast("Application Submitted", {
+            description: "Your application has been successfully submitted.",
+          });
+        },
+      },
+    );
   };
   const handlechange = () => {
     setOpen(false);
@@ -133,7 +147,7 @@ const AboutJob: React.FC = () => {
                   </p>
                 )}
               </div>
-              <div className="grid gap-2">
+              {/* <div className="grid gap-2">
                 <Label htmlFor="file">Resume/CV</Label>
                 <input
                   {...register("file")}
@@ -149,33 +163,33 @@ const AboutJob: React.FC = () => {
                     {errors.file.message?.toString()}
                   </p>
                 )}
-              </div>
+              </div> */}
               <div className="grid gap-2">
-                <label className="text-sm font-semibold" htmlFor="letter">
+                <label className="text-sm font-semibold" htmlFor="cover_letter">
                   Cover Letter
                 </label>
                 <textarea
-                  {...register("letter")}
+                  {...register("cover_letter")}
                   className="rounded-md border border-slate-300 py-1 pl-3 pr-6 text-sm"
-                  name="letter"
-                  id="letter"
+                  name="cover_letter"
+                  id="cover_letter"
                   cols={30}
                   rows={5}
                   placeholder="Tell us why you're interested in this position and why you'd be a great fit."
                   maxLength={280}
                 ></textarea>
-                {errors.letter && (
+                {errors.cover_letter && (
                   <p className="text-sm text-red-500">
-                    {errors.letter.message}
+                    {errors.cover_letter.message}
                   </p>
                 )}
               </div>
-              <span className="flex items-center gap-2">
+              {/* <span className="flex items-center gap-2">
                 <Checkbox id="terms" name="terms"></Checkbox>
                 <label className="text-sm font-medium" htmlFor="terms">
                   I agree to the terms and conditions and privacy policy
                 </label>
-              </span>
+              </span> */}
               <AlertDialog open={open} onOpenChange={setOpen}>
                 <AlertDialogTrigger asChild>
                   <button className="rounded-md bg-black py-2 text-sm font-medium text-white">
@@ -208,7 +222,7 @@ const AboutJob: React.FC = () => {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-center text-slate-500">
                 By applying, you confirm that all information provided is
                 accurate and complete.
               </p>

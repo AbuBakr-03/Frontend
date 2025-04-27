@@ -19,30 +19,19 @@ import {
   PopoverTrigger,
 } from "../../components/ui/popover";
 
-const frameworks = [
-  {
-    value: "london",
-    label: "London",
-  },
-  {
-    value: "losangeles",
-    label: "Los Angeles",
-  },
-  {
-    value: "newyorkcity",
-    label: "New York City",
-  },
-  {
-    value: "miami",
-    label: "Miami",
-  },
-  {
-    value: "dubai",
-    label: "Dubai",
-  },
-];
 
-export function Combobox() {
+
+type propType = {
+  value: string;
+  label: string;
+};
+
+type optionsType = {
+  options: propType[];
+  entity: string;
+};
+
+export const Combobox: React.FC<optionsType> = ({ options, entity }) => {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
   return (
@@ -55,7 +44,7 @@ export function Combobox() {
           className="w-[200px] justify-between"
         >
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
+            ? options.find((options) => options.value === value)?.label
             : "Select ..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>
@@ -64,23 +53,23 @@ export function Combobox() {
         <Command>
           <CommandInput placeholder="Search ..." className="h-9" />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No {entity} found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {options.map((options) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
+                  key={options.value}
+                  value={options.value}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue);
                     console.log(currentValue);
                     setOpen(false);
                   }}
                 >
-                  {framework.label}
+                  {options.label}
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === framework.value ? "opacity-100" : "opacity-0",
+                      value === options.value ? "opacity-100" : "opacity-0",
                     )}
                   />
                 </CommandItem>
@@ -91,4 +80,4 @@ export function Combobox() {
       </PopoverContent>
     </Popover>
   );
-}
+};

@@ -44,24 +44,24 @@ const Home: React.FC = () => {
 
       <ScrollAnimationWrapper>
         <Content1
-          heading="Why Choose SmartHR?"
-          text="Empower your HR team with AI-driven precision. SmartHR streamlines hiring, enhances employee engagement, and automates workforce management—helping you make data-backed decisions, reduce bias, and build a thriving workplace. Smarter HR starts here."
+          heading="Smarter Hiring Starts Here"
+          text="We blend AI, machine learning, and behavioral science to help you hire not just qualified candidates — but the right candidates. Experience a platform that’s designed to match today's fast-moving, competitive world of hiring."
           img={img1}
         />
       </ScrollAnimationWrapper>
 
       <ScrollAnimationWrapper>
         <Content2
-          heading="Perks & Benefits"
-          text="Designed for your success—competitive salaries, flexible work options, wellness programs, and continuous learning opportunities to help you grow."
+          heading="Built for Recruiters and Candidates Alike"
+          text="From seamless application experiences for candidates to powerful insights for recruiters, we create a win-win ecosystem where opportunity meets precision. Every feature is crafted to make hiring easier, faster, and more human."
           img={img2}
         />
       </ScrollAnimationWrapper>
 
       <ScrollAnimationWrapper>
         <Content1
-          heading="Our Culture"
-          text="Innovation meets collaboration. We foster a dynamic, inclusive, and forward-thinking environment where creativity and impact thrive."
+          heading="Innovation. Integrity. Impact"
+          text="We believe in reshaping the hiring journey with fairness, technology, and human-centered design. Our platform reflects the culture we build: collaborative, future-focused, and relentlessly innovative at every step."
           img={img3}
         />
       </ScrollAnimationWrapper>

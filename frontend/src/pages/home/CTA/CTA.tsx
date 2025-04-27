@@ -13,13 +13,15 @@ const CTA: React.FC = () => {
           <div
             className={`${colors.color} ${styles.text} grid gap-4 justify-self-start`}
           >
-            <h1 className={`font-inter text-4xl font-semibold`}>Join Us</h1>
+            <h1 className={`font-inter text-4xl font-semibold`}>
+              Join Us in Building the Future of Hiring
+            </h1>
             <p>
-              Be part of the future of AI-driven HR. Explore exciting career
-              opportunities and help us shape the next era of intelligent
-              workforce solutions.
+              Whether you’re a recruiter, a job-seeker, or a partner — there’s a
+              place for you in our journey. Be part of something bigger than
+              just finding a job — help shape how the world works.
             </p>
-            <Link to={"/JoinUs"}>
+            <Link to={"/join-us"}>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 className={`${colors.background} justify-self-start rounded px-6 py-2 font-semibold text-white`}

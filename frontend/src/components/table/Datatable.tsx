@@ -1,17 +1,15 @@
 import * as React from "react";
 
-import { Button } from "../../../components/ui/button";
-
 import {
   ColumnDef,
   flexRender,
-  ColumnFiltersState,
-  getFilteredRowModel,
   getCoreRowModel,
   SortingState,
   getSortedRowModel,
-  useReactTable,
   getPaginationRowModel,
+  ColumnFiltersState,
+  getFilteredRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 
 import {
@@ -21,18 +19,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../components/ui/table";
+} from "../ui/table";
 
-import { Input } from "../../../components/ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filter: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  filter,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -53,20 +54,21 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
+  console.log(data);
 
   return (
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter names..."
+          value={(table.getColumn(filter)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn(filter)?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border text-center">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -2,3 +2,35 @@
   display: grid;
   grid-template-columns: 8fr 4fr;
 }
+
+.secondsection {
+  display: grid;
+  grid-template-areas: "about links contacts";
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.about {
+  grid-area: about;
+}
+
+.links {
+  grid-area: links;
+}
+
+.contacts {
+  grid-area: contacts;
+}
+
+@media screen and (max-width: 768px) {
+  .secondsection {
+    grid-template-areas: "about about" "links contacts";
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .secondsection {
+    grid-template-areas: "about" "links" "contacts";
+    grid-template-columns: 1fr;
+  }
+}

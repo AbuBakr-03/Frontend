@@ -41,23 +41,23 @@ const Perks: React.FC = () => {
         <Hero
           img={heroimg}
           heading="Perks & Benefits: Work Smarter, Live Better"
-          text="At SmartHR, we invest in our people. From competitive compensation to wellness programs and career growth opportunities, our perks are designed to help you thrive—both professionally and personally."
+          text="Recruit smarter. Apply easier. Grow faster. Unlock a platform that’s designed to support your journey, whether you're hiring or getting hired."
         />
       </ScrollAnimationWrapper>
 
       <ScrollAnimationWrapper>
         <Content1
           img={contentimg1}
-          heading="Competitive Pay & Meaningful Benefits"
-          text="We offer industry-leading salaries, performance-based bonuses, comprehensive healthcare, and retirement plans—ensuring financial security and peace of mind for you and your family."
+          heading="All-in-One Hiring Dashboard"
+          text="Post jobs, screen resumes, interview candidates, and predict hiring outcomes — all from one intuitive platform. Track candidate journeys effortlessly and make hiring a strategic advantage, not a burden."
         />
       </ScrollAnimationWrapper>
 
       <ScrollAnimationWrapper>
         <Content2
           img={contentimg2}
-          heading="Flexibility, Wellness & Growth"
-          text="Enjoy flexible work arrangements, wellness programs, mental health support, and learning opportunities that empower you to grow in your career while maintaining a balanced life."
+          heading="Your Skills. Your Story. Your Opportunity"
+          text="Apply easily, get fair evaluations, and shine with interview feedback powered by real-world insights — not just gut feelings. Stand out for your potential, not just for what's written on your resume."
         />
       </ScrollAnimationWrapper>
     </main>

@@ -3,14 +3,18 @@ import {
   Globe,
   Home,
   Users,
-  ScrollText,
+  //ScrollText,
   MonitorDot,
   BriefcaseBusiness,
   ClipboardPenLine,
   ClipboardList,
+  Building2,
+  Landmark,
+  FileText,
+  Mail,
   // BookOpen,
   // Bot,
-  Command,
+  //Command,
   // Frame,
   // LifeBuoy,
   // Map,
@@ -33,6 +37,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../components/ui/sidebar";
+import { useAuth } from "../contexts/AuthProvider";
 
 const data = {
   user: {
@@ -147,62 +152,158 @@ const data = {
     },
     {
       name: "Why Us?",
-      url: "/WhyUs",
+      url: "/why-us",
       icon: Globe,
     },
     {
       name: "Perks",
-      url: "Perks",
+      url: "/perks",
       icon: Globe,
     },
     {
       name: "Join Us",
-      url: "/JoinUs",
+      url: "/join-us",
       icon: Globe,
     },
   ],
-  projects: [
+  tables: [
     {
-      name: "Home",
-      url: "/Dashboard/",
-      icon: Home,
+      name: "All Companies",
+      url: "/dashboard/all-companies",
+      icon: Building2,
     },
     {
-      name: "Personal Information",
-      url: "/Dashboard/PI",
-      icon: ClipboardList,
-    },
-    {
-      name: "Create Job Openings",
-      url: "/Dashboard/CJO",
-      icon: ClipboardPenLine,
+      name: "All Departments",
+      url: "/dashboard/all-departments",
+      icon: Landmark,
     },
     {
       name: "All Job Openings",
-      url: "/Dashboard/AJO",
+      url: "/dashboard/all-jobs",
       icon: BriefcaseBusiness,
     },
     {
-      name: "Interview Sessions",
-      url: "/Dashboard/IS",
+      name: "All Applications",
+      url: "/dashboard/all-applications",
+      icon: FileText,
+    },
+    {
+      name: "All Interview Sessions",
+      url: "/dashboard/all-interview-sessions",
       icon: MonitorDot,
     },
 
     {
-      name: "Interview Reports",
-      url: "/Dashboard/IR",
-      icon: ScrollText,
+      name: "All Predicted Candidates",
+      url: "/dashboard/all-predicted-candidates",
+      icon: Users,
+    },
+    {
+      name: "All Recruit Requests",
+      url: "/dashboard/all-recruit-requests",
+      icon: Mail,
+    },
+  ],
+  tables2: [
+    {
+      name: "All Job Openings",
+      url: "/dashboard/all-jobs",
+      icon: BriefcaseBusiness,
+    },
+    {
+      name: "All Applications",
+      url: "/dashboard/all-applications",
+      icon: FileText,
+    },
+    {
+      name: "All Interview Sessions",
+      url: "/dashboard/all-interview-sessions",
+      icon: MonitorDot,
     },
 
     {
-      name: "Predicted Candidates",
-      url: "/Dashboard/PC",
+      name: "All Predicted Candidates",
+      url: "/dashboard/all-predicted-candidates",
       icon: Users,
+    },
+  ],
+  tables3: [
+    {
+      name: "All Applications",
+      url: "/dashboard/all-applications",
+      icon: BriefcaseBusiness,
+    },
+    {
+      name: "All Interview Sessions",
+      url: "/dashboard/all-interview-sessions",
+      icon: MonitorDot,
+    },
+  ],
+  forms: [
+    {
+      name: "Home",
+      url: "/dashboard/",
+      icon: Home,
+    },
+    {
+      name: "Personal Information",
+      url: "/dashboard/personal-information",
+      icon: ClipboardList,
+    },
+    {
+      name: "Add Company",
+      url: "/dashboard/company",
+      icon: Building2,
+    },
+    {
+      name: "Add Department",
+      url: "/dashboard/department",
+      icon: Landmark,
+    },
+    {
+      name: "Add Job Opening",
+      url: "/dashboard/job",
+      icon: ClipboardPenLine,
+    },
+  ],
+  forms2: [
+    {
+      name: "Home",
+      url: "/dashboard/",
+      icon: Home,
+    },
+    {
+      name: "Personal Information",
+      url: "/dashboard/personal-information",
+      icon: ClipboardList,
+    },
+    {
+      name: "Add Job Opening",
+      url: "/dashboard/job",
+      icon: ClipboardPenLine,
+    },
+  ],
+  forms3: [
+    {
+      name: "Home",
+      url: "/dashboard/",
+      icon: Home,
+    },
+    {
+      name: "Personal Information",
+      url: "/dashboard/personal-information",
+      icon: ClipboardList,
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { auth } = useAuth();
+  let user: string = "Error@email.com";
+
+  if (auth.user?.email) {
+    user = auth.user.email;
+  }
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -210,12 +311,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                {/* <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
-                </div>
+                </div> */}
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Smart HR</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate text-lg font-semibold">
+                    Smart HR
+                  </span>
+                  <span className="truncate text-sm">Enterprise</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -225,11 +328,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         {/* <NavMain items={data.navMain} /> */}
         <NavProjects title="Website" projects={data.website} />
-        <NavProjects title="Dashboard" projects={data.projects} />
+        {auth.user?.is_superuser ? (
+          <>
+            <NavProjects title="Tables" projects={data.tables} />
+            <NavProjects title="Forms" projects={data.forms} />
+          </>
+        ) : auth.user?.is_recruiter ? (
+          <>
+            <NavProjects title="Tables" projects={data.tables2} />
+            <NavProjects title="Forms" projects={data.forms2} />
+          </>
+        ) : auth.user?.id ? (
+          <>
+            <NavProjects title="Tables" projects={data.tables3} />
+            <NavProjects title="Forms" projects={data.forms3} />
+          </>
+        ) : null}
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={{ email: user }} />
       </SidebarFooter>
     </Sidebar>
   );

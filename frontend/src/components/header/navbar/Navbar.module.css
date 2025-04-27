@@ -6,10 +6,29 @@
   align-items: center;
 }
 
+.container2 {
+  display: grid;
+  grid-template-columns: 2fr 8fr 2fr;
+  grid-template-areas: "logo links2 button2";
+  justify-content: space-between;
+  align-items: center;
+}
+
 .logo {
   grid-area: logo;
   align-self: center;
 }
+
+.links2 {
+  grid-area: links2;
+}
+
+.button2 {
+  grid-area: button2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 .links {
   grid-area: links;
   display: grid;
@@ -22,7 +41,4 @@
 }
 .buttonlink {
   grid-area: buttonlink;
-}
-.button {
-  background-color: #0f172a;
 }

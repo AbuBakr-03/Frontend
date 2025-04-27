@@ -11,14 +11,14 @@ const Jumbotron: React.FC = () => {
         <div className={`grid w-9/12 place-items-center gap-4 md:grid-cols-2`}>
           <div className={`grid gap-4 justify-self-start`}>
             <h1 className={`font-inter text-4xl font-semibold text-white`}>
-              Revolutionizing HR with Smarter AI Solutions
+              Revolutionize Hiring with AI-Powered Recruitment
             </h1>
             <p className={`text-white`}>
-              At SmartHR, we create AI-driven HR systems to simplify hiring,
-              optimize employee management, and transform workforce experiences.
-              Our technology helps you build a smarter, more agile organization.
+              Find top talent faster with intelligent resume screening,
+              real-time interview analysis, and predictive hiring insights.
+              Build a smarter, more efficient hiring process from day one.
             </p>
-            <Link to={"/JoinUs"}>
+            <Link to={"/join-us"}>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 className={`justify-self-start rounded-md bg-white px-6 py-2 font-semibold ${colors.color}`}

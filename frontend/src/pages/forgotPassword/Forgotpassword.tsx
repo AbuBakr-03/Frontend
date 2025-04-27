@@ -4,10 +4,12 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast, Toaster } from "sonner";
+import { useForgotPassword } from "../../hooks/useForgotPassword";
 const Forgotpassword: React.FC = () => {
   const schema = z.object({
     email: z.string().email(),
   });
+  const { postEmailMutation } = useForgotPassword();
   type fieldTypes = z.infer<typeof schema>;
   const {
     register,
@@ -15,9 +17,13 @@ const Forgotpassword: React.FC = () => {
     formState: { errors },
   } = useForm<fieldTypes>({ resolver: zodResolver(schema) });
   const submitter: SubmitHandler<fieldTypes> = (data) => {
-    console.log(data);
-    toast("Instructions Sent!", {
-      description: "Reset instructions sent, please check your Email.",
+    postEmailMutation.mutate(data.email, {
+      onSuccess: () => {
+        console.log(data);
+        toast("Instructions Sent!", {
+          description: "Reset instructions sent, please check your Email.",
+        });
+      },
     });
   };
   return (
@@ -34,7 +40,7 @@ const Forgotpassword: React.FC = () => {
             </h1>
             <Link
               className="justify-self-end text-sm underline-offset-2 hover:underline"
-              to={"/Login"}
+              to={"/log-in"}
             >
               Back to Login
             </Link>

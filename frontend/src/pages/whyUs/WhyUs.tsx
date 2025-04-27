@@ -40,24 +40,24 @@ const WhyUs: React.FC = () => {
       <ScrollAnimationWrapper>
         <Hero
           img={heroimg1}
-          heading="Why SmartHR? Smarter HR, Stronger Teams"
-          text="At SmartHR, we go beyond traditional HR tech. Our AI-driven solutions empower businesses with smarter hiring, seamless workforce management, and data-driven insights—helping you build a workplace that thrives."
+          heading="Why Choose Us?"
+          text="Smart, fair, and future-ready recruitment — designed for real-world hiring challenges.We empower organizations to make better, faster, and more confident hiring decisions through technology."
         />
       </ScrollAnimationWrapper>
 
       <ScrollAnimationWrapper>
         <Content1
           img={contentimg1}
-          heading="AI-Powered HR That Works for You"
-          text="Our intelligent platform automates recruitment, reduces bias, and enhances employee engagement—so you can focus on what matters most: your people."
+          heading="Screen Smarter, Not Harder"
+          text="Our AI analyzes resumes for skills, experience, and relevance — ensuring only qualified candidates move forward. Say goodbye to endless resume piles and hello to instant, insightful shortlists."
         />
       </ScrollAnimationWrapper>
 
       <ScrollAnimationWrapper>
         <Content2
           img={contentimg2}
-          heading="Scalable, Secure, and Built for Growth"
-          text="From startups to enterprises, TalentIQ adapts to your needs. Our secure, scalable solutions integrate seamlessly with your existing tools, ensuring efficiency and compliance at every stage."
+          heading="Beyond the Resume"
+          text="During interviews, our system captures vocal tone, facial cues, and confidence levels to provide a holistic view of each candidate. No more relying on gut feelings alone — make every decision backed by behavioral science and real data."
         />
       </ScrollAnimationWrapper>
     </main>
