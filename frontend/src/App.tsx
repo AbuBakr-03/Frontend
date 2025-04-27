@@ -24,6 +24,7 @@ import Createdepartment from "./pages/dashboard/createDepartment/Createdepartmen
 import Createapplication from "./pages/dashboard/createApplication/Createapplication";
 import { Toaster } from "sonner";
 import Scrolltotop from "./components/scrollToTop/Scrolltotop";
+import Resetpassword from "./pages/resetPassword/Resetpassword";
 function App() {
   return (
     <>
@@ -36,6 +37,14 @@ function App() {
           <Route path="/join-us" element={<JoinUs2></JoinUs2>}></Route>
           <Route path="/sign-up" element={<Signup></Signup>}></Route>
           <Route path="/log-in" element={<Login></Login>}></Route>
+          <Route
+            path="/reset-password"
+            element={<Resetpassword></Resetpassword>}
+          ></Route>
+          <Route
+            path="/reset-password/:id"
+            element={<Resetpassword></Resetpassword>}
+          ></Route>
           <Route
             path="/forgot-password"
             element={<Forgotpassword></Forgotpassword>}
