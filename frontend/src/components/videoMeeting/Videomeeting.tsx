@@ -7,10 +7,12 @@ import {
   Video as VideoIcon,
   VideoOff,
   PhoneOff,
+  Video,
+  StopCircle,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthProvider";
+import { toast } from "sonner";
 
-// Simplified one-on-one video conference component using WebRTC
 const Videomeeting: React.FC = () => {
   const { meetingId } = useParams<{ meetingId: string }>();
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
@@ -18,10 +20,19 @@ const Videomeeting: React.FC = () => {
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null,
+  );
 
+  // Refs for media elements
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const recordingTimerRef = useRef<number | null>(null);
+
   const { auth } = useAuth();
+  const isRecruiter = auth.user?.is_recruiter || auth.user?.is_superuser;
 
   // Initialize local media stream
   useEffect(() => {
@@ -53,6 +64,7 @@ const Videomeeting: React.FC = () => {
         }, 2000);
       } catch (err) {
         console.error("Error accessing media devices:", err);
+        toast.error("Could not access camera or microphone");
       }
     };
 
@@ -63,6 +75,12 @@ const Videomeeting: React.FC = () => {
       if (localStream) {
         localStream.getTracks().forEach((track) => track.stop());
       }
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+      }
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+      }
     };
   }, []);
 
@@ -72,6 +90,85 @@ const Videomeeting: React.FC = () => {
       remoteVideoRef.current.srcObject = remoteStream;
     }
   }, [remoteStream]);
+
+  // Candidate video recording functions
+  const startCandidateRecording = async () => {
+    if (!remoteStream) {
+      toast.error("No candidate video to record");
+      return;
+    }
+
+    try {
+      // Create a MediaRecorder for the remote stream (candidate's webcam)
+      const options = { mimeType: "video/webm; codecs=vp9" };
+      const recorder = new MediaRecorder(remoteStream, options);
+      setMediaRecorder(recorder);
+
+      const chunks: BlobPart[] = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          chunks.push(e.data);
+        }
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: "video/webm" });
+        const url = URL.createObjectURL(blob);
+
+        // Create download link
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = `candidate-${meetingId}-recording.webm`;
+        document.body.appendChild(a);
+        a.click();
+
+        setTimeout(() => {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        }, 100);
+
+        setRecordingTime(0);
+        setIsRecording(false);
+      };
+
+      // Start recording
+      recorder.start(1000); // Capture chunks every second
+      setIsRecording(true);
+
+      // Start timer
+      recordingTimerRef.current = window.setInterval(() => {
+        setRecordingTime((prev) => prev + 1);
+      }, 1000);
+
+      toast.success("Candidate video recording started");
+    } catch (err) {
+      console.error("Error starting candidate recording:", err);
+      toast.error("Could not start recording");
+    }
+  };
+
+  const stopCandidateRecording = () => {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+      mediaRecorder.stop();
+    }
+
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+    }
+
+    toast.info("Candidate video recording stopped");
+  };
+
+  // Format recording time as MM:SS
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const secs = (seconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
+  };
 
   // Toggle microphone
   const toggleMic = () => {
@@ -97,11 +194,16 @@ const Videomeeting: React.FC = () => {
 
   // End call
   const endCall = () => {
-    // In a real app, we would disconnect from the signaling server
-    // and close the peer connection
+    // Stop recording if active
+    if (isRecording) {
+      stopCandidateRecording();
+    }
+
+    // Stop all streams
     if (localStream) {
       localStream.getTracks().forEach((track) => track.stop());
     }
+
     window.history.back();
   };
 
@@ -113,6 +215,12 @@ const Videomeeting: React.FC = () => {
           Interview Session: {meetingId}
         </h1>
         <div className="flex items-center gap-2">
+          {isRecording && (
+            <div className="flex items-center gap-2 rounded-full bg-red-100 px-3 py-1.5 text-sm font-medium text-red-800">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-red-600"></span>
+              <span>Recording candidate {formatTime(recordingTime)}</span>
+            </div>
+          )}
           <span
             className={`rounded-full px-3 py-1.5 text-sm font-medium ${isConnected ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}
           >
@@ -124,7 +232,7 @@ const Videomeeting: React.FC = () => {
       {/* Video container */}
       <div className="flex flex-1 items-center justify-center bg-gray-900 p-4">
         <div className="relative flex h-full w-full max-w-6xl flex-col md:flex-row md:items-center md:justify-center md:gap-4">
-          {/* Main video (remote) */}
+          {/* Main video (remote/candidate) */}
           <div className="relative mb-4 h-full w-full overflow-hidden rounded-xl bg-black md:mb-0 md:max-h-[80vh] md:flex-1">
             {isConnected ? (
               <video
@@ -141,6 +249,14 @@ const Videomeeting: React.FC = () => {
                     Waiting for the other participant to join...
                   </p>
                 </div>
+              </div>
+            )}
+
+            {/* Recording indicator overlay on candidate video */}
+            {isRecording && (
+              <div className="absolute left-4 top-4 flex items-center gap-2 rounded bg-red-500/80 px-3 py-1 text-sm text-white">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-white"></span>
+                <span>REC</span>
               </div>
             )}
           </div>
@@ -180,6 +296,30 @@ const Videomeeting: React.FC = () => {
         >
           {isVideoOn ? <VideoIcon /> : <VideoOff />}
         </Button>
+
+        {/* Candidate video recording buttons - only visible for recruiters */}
+        {isRecruiter &&
+          isConnected &&
+          (isRecording ? (
+            <Button
+              variant="destructive"
+              size="icon"
+              className="h-12 w-12 rounded-full"
+              onClick={stopCandidateRecording}
+            >
+              <StopCircle />
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-12 w-12 rounded-full"
+              onClick={startCandidateRecording}
+              title="Record candidate video"
+            >
+              <Video />
+            </Button>
+          ))}
 
         <Button
           variant="destructive"
