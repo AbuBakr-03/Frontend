@@ -18,10 +18,12 @@ import Alldepartments from "./pages/dashboard/allDepartments/Alldepartments";
 import Alljobs from "./pages/dashboard/allJobs/Alljobs";
 import Allapplications from "./pages/dashboard/allApplications/Allapplications";
 import Allrecruitrequests from "./pages/dashboard/allRecruitRequests/Allrecruitrequests";
+import Allinterviews from "./pages/dashboard/allInterviews/Allinterviews";
 import Userdashboard from "./pages/userDashboard/Userdashboard";
 import Createcompany from "./pages/dashboard/createCompany/Createcompany";
 import Createdepartment from "./pages/dashboard/createDepartment/Createdepartment";
 import Createapplication from "./pages/dashboard/createApplication/Createapplication";
+import Createinterview from "./pages/dashboard/createInterview/Createinterview";
 import { Toaster } from "sonner";
 import Scrolltotop from "./components/scrollToTop/Scrolltotop";
 import Resetpassword from "./pages/resetPassword/Resetpassword";
@@ -72,6 +74,15 @@ function App() {
           <Route path="job" element={<Jobopening></Jobopening>}></Route>
           <Route path="job/:id" element={<Jobopening></Jobopening>}></Route>
           <Route
+            path="interview"
+            element={<Createinterview></Createinterview>}
+          ></Route>
+          <Route
+            path="interview/:id"
+            element={<Createinterview></Createinterview>}
+          ></Route>
+
+          <Route
             path="all-companies"
             element={<Allcompanies></Allcompanies>}
           ></Route>
@@ -86,7 +97,7 @@ function App() {
           ></Route>
           <Route
             path="all-interview-sessions"
-            element={<Allcompanies></Allcompanies>}
+            element={<Allinterviews></Allinterviews>}
           ></Route>
           <Route
             path="all-interview-reports"
