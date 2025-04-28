@@ -39,6 +39,11 @@ type interviewType = {
     slug: string;
   };
   meeting_link: string | null;
+  analysis_data?: {
+    emotions: Record<string, number>;
+    confidence: number;
+    result: number;
+  } | null;
 };
 
 type newInterviewType = {
@@ -109,4 +114,99 @@ export const generateMeetingLink = async (
     { headers: getAuthHeader() },
   );
   return data;
+};
+
+// New function to analyze a recording
+// Assuming this is a utility function to get authorization headers
+
+export const analyzeRecording = async (
+  id: number,
+  recordingData: string,
+): Promise<{
+  success: boolean;
+  message: string;
+  emotions: Record<string, number>;
+  confidence: number;
+  result_id: number;
+  result_title: string;
+}> => {
+  console.log("Starting analysis for interview ID:", id);
+
+  try {
+    const response = await axios.post(
+      `${API_URL}${id}/analyze-recording/`,
+      { recording_data: recordingData, interview_id: id },
+      {
+        headers: {
+          ...getAuthHeader(),
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    // Log the successful response
+    console.log("Analysis response received:", response.data);
+
+    return response.data;
+  } catch (error: unknown) {
+    // Type-check the error and log it
+    if (axios.isAxiosError(error)) {
+      // Axios-specific error handling
+      console.error("Axios error occurred during recording analysis:", error);
+      if (error.response) {
+        console.error("Error response from API:", error.response.data);
+
+        // Check for the specific error related to librosa
+        if (
+          error.response.data.error &&
+          error.response.data.error.includes("No librosa attribute output")
+        ) {
+          console.error("Librosa processing error:", error.response.data.error);
+          throw new Error(
+            "Failed to process the recording. The audio analysis could not be completed.",
+          );
+        }
+
+        throw new Error(
+          `API Error: ${error.response.data.error || "Unknown error"}`,
+        );
+      } else if (error.request) {
+        console.error("No response received from API:", error.request);
+        throw new Error(
+          "No response from API. Please check your network connection.",
+        );
+      } else {
+        console.error("Error setting up the request:", error.message);
+        throw new Error(`Error: ${error.message}`);
+      }
+    } else if (error instanceof Error) {
+      // Generic Error object handling
+      console.error("Error occurred during recording analysis:", error.message);
+      throw new Error(error.message);
+    } else {
+      // Handle unknown error type
+      console.error("An unknown error occurred during recording analysis");
+      throw new Error("An unknown error occurred. Please try again.");
+    }
+  }
+};
+
+
+// Function to find an interview by meeting ID
+export const findInterviewByMeetingId = async (
+  meetingId: string,
+): Promise<interviewType | null> => {
+  try {
+    const { data } = await axios.get(`${API_URL}?meeting_id=${meetingId}`, {
+      headers: getAuthHeader(),
+    });
+
+    if (data.results && data.results.length > 0) {
+      return data.results[0];
+    }
+    return null;
+  } catch (error) {
+    console.error("Error finding interview by meeting ID:", error);
+    return null;
+  }
 };

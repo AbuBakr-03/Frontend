@@ -58,6 +58,7 @@ const Allinterviews = () => {
     date: interview.date,
     result: interview.result.title,
     meeting_link: interview.meeting_link,
+    analysis_data: interview.analysis_data,
   }));
 
   return (

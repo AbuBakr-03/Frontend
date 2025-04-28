@@ -12,6 +12,11 @@ export type interviewType = {
   date: string | null;
   result: string;
   meeting_link: string | null;
+  analysis_data?: {
+    emotions: Record<string, number>;
+    confidence: number;
+    result: number;
+  } | null;
 };
 
 export const columns = (
@@ -61,6 +66,34 @@ export const columns = (
   {
     accessorKey: "result",
     header: () => <div className="text-center">Result</div>,
+    cell: ({ row }) => {
+      const result = row.getValue("result") as string;
+      const analysisData = row.original.analysis_data;
+
+      // Determine the color based on the result
+      let textColor = "text-gray-600"; // Default
+      if (
+        result.toLowerCase().includes("hired") ||
+        result.toLowerCase().includes("approved")
+      ) {
+        textColor = "text-green-600";
+      } else if (result.toLowerCase().includes("rejected")) {
+        textColor = "text-red-600";
+      } else if (result.toLowerCase().includes("pending")) {
+        textColor = "text-yellow-600";
+      }
+
+      return (
+        <div className="text-center">
+          <span className={`font-medium ${textColor}`}>{result}</span>
+          {analysisData && (
+            <div className="mt-1 text-xs text-gray-500">
+              Confidence: {analysisData.confidence.toFixed(1)}%
+            </div>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "meeting_link",
