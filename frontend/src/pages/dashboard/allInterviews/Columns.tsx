@@ -1,5 +1,7 @@
+// frontend/src/pages/dashboard/allInterviews/Columns.tsx
+
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Video, Link as LinkIcon, Copy } from "lucide-react";
+import { ArrowUpDown, Link as LinkIcon, PlayCircle } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import Actionscell from "../../../components/table/Actionscell";
 import { toast } from "sonner";
@@ -11,7 +13,8 @@ export type interviewType = {
   application_email: string;
   date: string | null;
   result: string;
-  meeting_link: string | null;
+  external_meeting_link: string | null;
+  interview_video: string | null; // From API, this is always a string path or null
   analysis_data?: {
     emotions: Record<string, number>;
     confidence: number;
@@ -21,7 +24,7 @@ export type interviewType = {
 
 export const columns = (
   onDelete: (id: number) => void,
-  onGenerateLink: (id: number) => void,
+  onAnalyze: (id: number) => void,
 ): ColumnDef<interviewType>[] => [
   {
     accessorKey: "id",
@@ -96,23 +99,15 @@ export const columns = (
     },
   },
   {
-    accessorKey: "meeting_link",
-    header: () => <div className="text-center">Interview Link</div>,
+    accessorKey: "external_meeting_link",
+    header: () => <div className="text-center">Meeting Link</div>,
     cell: ({ row }) => {
-      const link = row.getValue("meeting_link");
+      const link = row.getValue("external_meeting_link");
 
       if (!link) {
         return (
-          <div className="flex justify-center">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onGenerateLink(row.original.id)}
-              className="flex items-center gap-1"
-            >
-              <Video className="h-4 w-4" />
-              <span>Generate Link</span>
-            </Button>
+          <div className="text-center text-sm text-gray-500">
+            No link provided
           </div>
         );
       }
@@ -136,8 +131,60 @@ export const columns = (
               toast.success("Link copied to clipboard!");
             }}
           >
-            <Copy className="h-4 w-4" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
           </Button>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "interview_video",
+    header: () => <div className="text-center">Recording</div>,
+    cell: ({ row }) => {
+      const video = row.original.interview_video;
+      const hasVideo = !!video;
+      const hasAnalysis = !!row.original.analysis_data;
+
+      if (!hasVideo) {
+        return (
+          <div className="flex justify-center">
+            <span className="text-sm text-gray-500">No video uploaded</span>
+          </div>
+        );
+      }
+
+      return (
+        <div className="flex justify-center">
+          {hasVideo && !hasAnalysis && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onAnalyze(row.original.id)}
+              className="flex items-center gap-1"
+            >
+              <PlayCircle className="h-4 w-4" />
+              <span>Analyze Video</span>
+            </Button>
+          )}
+          {hasVideo && hasAnalysis && (
+            <div className="flex items-center gap-1 text-green-600">
+              <PlayCircle className="h-4 w-4" />
+              <span>Analyzed</span>
+            </div>
+          )}
         </div>
       );
     },

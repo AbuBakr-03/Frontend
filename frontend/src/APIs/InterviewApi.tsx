@@ -1,3 +1,5 @@
+// frontend/src/APIs/InterviewApi.tsx
+
 import axios from "axios";
 
 const API_URL = "http://127.0.0.1:8000/api/interview/";
@@ -38,7 +40,8 @@ type interviewType = {
     title: string;
     slug: string;
   };
-  meeting_link: string | null;
+  external_meeting_link: string | null;
+  interview_video: string | null;
   analysis_data?: {
     emotions: Record<string, number>;
     confidence: number;
@@ -49,14 +52,16 @@ type interviewType = {
 type newInterviewType = {
   application_id: number;
   date?: string | null;
-  generate_link?: boolean;
+  external_meeting_link?: string | null;
+  interview_video?: File | null;
 };
 
 type updateInterviewType = {
   id: number;
   application_id: number;
   date?: string | null;
-  generate_link?: boolean;
+  external_meeting_link?: string | null;
+  interview_video?: File | null;
 };
 
 type listInterviewType = {
@@ -90,8 +95,27 @@ export const deleteInterview = async (id: number): Promise<void> => {
 export const postInterview = async (
   interview: newInterviewType,
 ): Promise<interviewType> => {
-  const { data } = await axios.post(API_URL, interview, {
-    headers: getAuthHeader(),
+  // Handle file upload with FormData
+  const formData = new FormData();
+  formData.append("application_id", interview.application_id.toString());
+
+  if (interview.date) {
+    formData.append("date", interview.date);
+  }
+
+  if (interview.external_meeting_link) {
+    formData.append("external_meeting_link", interview.external_meeting_link);
+  }
+
+  if (interview.interview_video) {
+    formData.append("interview_video", interview.interview_video);
+  }
+
+  const { data } = await axios.post(API_URL, formData, {
+    headers: {
+      ...getAuthHeader(),
+      "Content-Type": "multipart/form-data",
+    },
   });
   return data;
 };
@@ -99,29 +123,34 @@ export const postInterview = async (
 export const putInterview = async (
   interview: updateInterviewType,
 ): Promise<interviewType> => {
-  const { data } = await axios.put(`${API_URL}${interview.id}/`, interview, {
-    headers: getAuthHeader(),
+  // Handle file upload with FormData
+  const formData = new FormData();
+  formData.append("application_id", interview.application_id.toString());
+
+  if (interview.date) {
+    formData.append("date", interview.date);
+  }
+
+  if (interview.external_meeting_link) {
+    formData.append("external_meeting_link", interview.external_meeting_link);
+  }
+
+  if (interview.interview_video) {
+    formData.append("interview_video", interview.interview_video);
+  }
+
+  const { data } = await axios.put(`${API_URL}${interview.id}/`, formData, {
+    headers: {
+      ...getAuthHeader(),
+      "Content-Type": "multipart/form-data",
+    },
   });
   return data;
 };
 
-export const generateMeetingLink = async (
-  id: number,
-): Promise<{ meeting_link: string }> => {
-  const { data } = await axios.post(
-    `${API_URL}${id}/generate-meeting/`,
-    {},
-    { headers: getAuthHeader() },
-  );
-  return data;
-};
-
-// New function to analyze a recording
-// Assuming this is a utility function to get authorization headers
-
+// Function to analyze a previously uploaded video
 export const analyzeRecording = async (
   id: number,
-  recordingData: string,
 ): Promise<{
   success: boolean;
   message: string;
@@ -135,7 +164,7 @@ export const analyzeRecording = async (
   try {
     const response = await axios.post(
       `${API_URL}${id}/analyze-recording/`,
-      { recording_data: recordingData, interview_id: id },
+      { interview_id: id },
       {
         headers: {
           ...getAuthHeader(),
@@ -144,69 +173,10 @@ export const analyzeRecording = async (
       },
     );
 
-    // Log the successful response
     console.log("Analysis response received:", response.data);
-
     return response.data;
-  } catch (error: unknown) {
-    // Type-check the error and log it
-    if (axios.isAxiosError(error)) {
-      // Axios-specific error handling
-      console.error("Axios error occurred during recording analysis:", error);
-      if (error.response) {
-        console.error("Error response from API:", error.response.data);
-
-        // Check for the specific error related to librosa
-        if (
-          error.response.data.error &&
-          error.response.data.error.includes("No librosa attribute output")
-        ) {
-          console.error("Librosa processing error:", error.response.data.error);
-          throw new Error(
-            "Failed to process the recording. The audio analysis could not be completed.",
-          );
-        }
-
-        throw new Error(
-          `API Error: ${error.response.data.error || "Unknown error"}`,
-        );
-      } else if (error.request) {
-        console.error("No response received from API:", error.request);
-        throw new Error(
-          "No response from API. Please check your network connection.",
-        );
-      } else {
-        console.error("Error setting up the request:", error.message);
-        throw new Error(`Error: ${error.message}`);
-      }
-    } else if (error instanceof Error) {
-      // Generic Error object handling
-      console.error("Error occurred during recording analysis:", error.message);
-      throw new Error(error.message);
-    } else {
-      // Handle unknown error type
-      console.error("An unknown error occurred during recording analysis");
-      throw new Error("An unknown error occurred. Please try again.");
-    }
-  }
-};
-
-
-// Function to find an interview by meeting ID
-export const findInterviewByMeetingId = async (
-  meetingId: string,
-): Promise<interviewType | null> => {
-  try {
-    const { data } = await axios.get(`${API_URL}?meeting_id=${meetingId}`, {
-      headers: getAuthHeader(),
-    });
-
-    if (data.results && data.results.length > 0) {
-      return data.results[0];
-    }
-    return null;
   } catch (error) {
-    console.error("Error finding interview by meeting ID:", error);
-    return null;
+    console.error("Error occurred during recording analysis:", error);
+    throw new Error("An error occurred during analysis. Please try again.");
   }
 };

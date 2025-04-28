@@ -1,10 +1,12 @@
+// frontend/src/hooks/useInterview.tsx
+
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import {
   deleteInterview,
   getInterviews,
   postInterview,
   putInterview,
-  generateMeetingLink,
+  analyzeRecording,
 } from "../APIs/InterviewApi";
 
 export const useInterview = () => {
@@ -31,8 +33,8 @@ export const useInterview = () => {
       queryClient.invalidateQueries({ queryKey: ["Interviews"] });
     },
   });
-  const generateMeetingLinkMutation = useMutation({
-    mutationFn: generateMeetingLink,
+  const analyzeRecordingMutation = useMutation({
+    mutationFn: analyzeRecording,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["Interviews"] });
     },
@@ -42,6 +44,6 @@ export const useInterview = () => {
     deleteInterviewMutation,
     postInterviewMutation,
     putInterviewMutation,
-    generateMeetingLinkMutation,
+    analyzeRecordingMutation,
   };
 };

@@ -110,7 +110,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       "user_is_superuser",
     ];
 
-    keysToRemove.forEach((key) => storage.remove(key));
+    keysToRemove.forEach((x) => storage.remove(x));
 
     // Reset auth state
     setAuth({
