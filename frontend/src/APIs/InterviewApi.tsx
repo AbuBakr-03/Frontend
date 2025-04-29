@@ -4,6 +4,9 @@ import axios from "axios";
 
 const API_URL = "http://127.0.0.1:8000/api/interview/";
 
+// frontend/src/APIs/InterviewApi.tsx
+// Make sure your interviewType includes the interview_questions property:
+
 type interviewType = {
   id: number;
   application: {
@@ -47,8 +50,8 @@ type interviewType = {
     confidence: number;
     result: number;
   } | null;
+  interview_questions?: Array<{ category: string; question: string }> | null;
 };
-
 type newInterviewType = {
   application_id: number;
   date?: string | null;
@@ -178,5 +181,39 @@ export const analyzeRecording = async (
   } catch (error) {
     console.error("Error occurred during recording analysis:", error);
     throw new Error("An error occurred during analysis. Please try again.");
+  }
+};
+
+// frontend/src/APIs/InterviewApi.tsx - Add this function
+
+// Function to generate interview questions from resume
+export const generateInterviewQuestions = async (
+  id: number,
+): Promise<{
+  success: boolean;
+  message: string;
+  questions: Array<{ category: string; question: string }>;
+}> => {
+  console.log("Starting question generation for interview ID:", id);
+
+  try {
+    const response = await axios.post(
+      `${API_URL}${id}/generate-questions/`,
+      { interview_id: id },
+      {
+        headers: {
+          ...getAuthHeader(),
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    console.log("Questions generated successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error occurred during question generation:", error);
+    throw new Error(
+      "An error occurred while generating questions. Please try again.",
+    );
   }
 };

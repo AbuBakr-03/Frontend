@@ -1,7 +1,12 @@
 // frontend/src/pages/dashboard/allInterviews/Columns.tsx
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Link as LinkIcon, PlayCircle } from "lucide-react";
+import {
+  ArrowUpDown,
+  Link as LinkIcon,
+  PlayCircle,
+  FileText,
+} from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import Actionscell from "../../../components/table/Actionscell";
 import { toast } from "sonner";
@@ -14,17 +19,20 @@ export type interviewType = {
   date: string | null;
   result: string;
   external_meeting_link: string | null;
-  interview_video: string | null; // From API, this is always a string path or null
+  interview_video: string | null;
   analysis_data?: {
     emotions: Record<string, number>;
     confidence: number;
     result: number;
   } | null;
+  interview_questions?: Array<{ category: string; question: string }> | null;
 };
 
 export const columns = (
   onDelete: (id: number) => void,
   onAnalyze: (id: number) => void,
+  onGenerateQuestions: (id: number) => void,
+  onViewQuestions: (id: number) => void,
 ): ColumnDef<interviewType>[] => [
   {
     accessorKey: "id",
@@ -184,6 +192,50 @@ export const columns = (
               <PlayCircle className="h-4 w-4" />
               <span>Analyzed</span>
             </div>
+          )}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "interview_questions",
+    header: () => <div className="text-center">Questions</div>,
+    cell: ({ row }) => {
+      const hasResume = row.original.application_email !== null; // Assuming all applications with resumes have emails
+      const hasQuestions =
+        !!row.original.interview_questions &&
+        row.original.interview_questions.length > 0;
+
+      if (!hasResume) {
+        return (
+          <div className="flex justify-center">
+            <span className="text-sm text-gray-500">No resume available</span>
+          </div>
+        );
+      }
+
+      return (
+        <div className="flex justify-center gap-2">
+          {!hasQuestions ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onGenerateQuestions(row.original.id)}
+              className="flex items-center gap-1"
+            >
+              <FileText className="h-4 w-4" />
+              <span>Generate Questions</span>
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onViewQuestions(row.original.id)}
+              className="flex items-center gap-1 text-green-600"
+            >
+              <FileText className="h-4 w-4" />
+              <span>View Questions</span>
+            </Button>
           )}
         </div>
       );

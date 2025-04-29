@@ -6,14 +6,12 @@ import Header from "./components/header/Header";
 import Home from "./pages/home/Home";
 import WhyUs from "./pages/whyUs/WhyUs";
 import Perks from "./pages/perks/Perks";
-// import JoinUs from "./pages/joinUs/JoinUs";
 import JoinUs2 from "./pages/joinUs2/JoinUs2";
 import Signup from "./pages/signUp/Signup";
 import Login from "./pages/logIn/Login";
 import AboutJob from "./pages/aboutjob/Aboutjob";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Forgotpassword from "./pages/forgotPassword/Forgotpassword";
-import Personalinformation from "./pages/dashboard/personalInformation/Personalinformation";
 import Jobopening from "./pages/dashboard/createJob/Createjob";
 import Allcompanies from "./pages/dashboard/allCompanies/Allcompanies";
 import Alldepartments from "./pages/dashboard/allDepartments/Alldepartments";
@@ -25,9 +23,11 @@ import Createcompany from "./pages/dashboard/createCompany/Createcompany";
 import Createdepartment from "./pages/dashboard/createDepartment/Createdepartment";
 import Createapplication from "./pages/dashboard/createApplication/Createapplication";
 import Createinterview from "./pages/dashboard/createInterview/Createinterview";
+import InterviewQuestions from "./components/interview_questions";
 import { Toaster } from "sonner";
 import Scrolltotop from "./components/scrollToTop/Scrolltotop";
 import Resetpassword from "./pages/resetPassword/Resetpassword";
+import DashboardHome from "./pages/dashboard/Dashboardhome";
 
 function App() {
   return (
@@ -58,10 +58,8 @@ function App() {
           <Route path="/about-job/:id" element={<AboutJob></AboutJob>}></Route>
         </Route>
         <Route path="/dashboard" element={<Dashboard></Dashboard>}>
-          <Route
-            path="personal-information"
-            element={<Personalinformation></Personalinformation>}
-          ></Route>
+          <Route index element={<DashboardHome />} />
+
           <Route
             path="company"
             element={<Createcompany></Createcompany>}
@@ -83,6 +81,10 @@ function App() {
           <Route
             path="interview/:id"
             element={<Createinterview></Createinterview>}
+          ></Route>
+          <Route
+            path="interview-questions/:id"
+            element={<InterviewQuestions />}
           ></Route>
 
           <Route
@@ -106,16 +108,12 @@ function App() {
             path="all-interview-reports"
             element={<Allcompanies></Allcompanies>}
           ></Route>
-          <Route
-            path="all-predicted-candidates"
-            element={<Allcompanies></Allcompanies>}
-          ></Route>
+
           <Route
             path="all-recruit-requests"
             element={<Allrecruitrequests></Allrecruitrequests>}
           ></Route>
         </Route>
-        
       </Routes>
       <Toaster></Toaster>
     </>

@@ -5,14 +5,17 @@ import { DataTable } from "../../../components/table/Datatable";
 import { toast, Toaster } from "sonner";
 import { useInterview } from "../../../hooks/useInterview";
 import Loader from "../../../components/loader/Loader";
+import { useNavigate } from "react-router-dom";
 
 const Allinterviews = () => {
   const {
     interviewQueries,
     deleteInterviewMutation,
     analyzeRecordingMutation,
+    generateQuestionsMutation,
   } = useInterview();
   const { data, isLoading } = interviewQueries;
+  const navigate = useNavigate();
 
   if (isLoading) {
     return <Loader />;
@@ -53,7 +56,37 @@ const Allinterviews = () => {
     });
   };
 
-  const newcolumns = columns(handleDelete, handleAnalyze);
+  const handleGenerateQuestions = (id: number) => {
+    toast.info("Generating questions...", {
+      description: "This may take a moment while we analyze the resume.",
+    });
+
+    generateQuestionsMutation.mutate(id, {
+      onSuccess: () => {
+        interviewQueries.refetch();
+        toast("Questions Generated!", {
+          description: "Interview questions have been generated successfully!",
+        });
+      },
+      onError: () => {
+        toast.error("Error!", {
+          description:
+            "Could not generate interview questions. Please try again.",
+        });
+      },
+    });
+  };
+
+  const handleViewQuestions = (id: number) => {
+    navigate(`/dashboard/interview-questions/${id}`);
+  };
+
+  const newcolumns = columns(
+    handleDelete,
+    handleAnalyze,
+    handleGenerateQuestions,
+    handleViewQuestions,
+  );
 
   // Transform API data to match the table columns and ensure type compatibility
   const transformedData: interviewType[] = data.results.map((interview) => ({
@@ -64,8 +97,9 @@ const Allinterviews = () => {
     date: interview.date,
     result: interview.result.title,
     external_meeting_link: interview.external_meeting_link,
-    interview_video: interview.interview_video, // This is a string (URL) from the API
+    interview_video: interview.interview_video,
     analysis_data: interview.analysis_data,
+    interview_questions: interview.interview_questions,
   }));
 
   return (

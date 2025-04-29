@@ -7,7 +7,10 @@ import {
   postInterview,
   putInterview,
   analyzeRecording,
+  generateInterviewQuestions,
 } from "../APIs/InterviewApi";
+
+// frontend/src/hooks/useInterview.tsx - Update this file
 
 export const useInterview = () => {
   const queryClient = useQueryClient();
@@ -39,11 +42,18 @@ export const useInterview = () => {
       queryClient.invalidateQueries({ queryKey: ["Interviews"] });
     },
   });
+  const generateQuestionsMutation = useMutation({
+    mutationFn: generateInterviewQuestions,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Interviews"] });
+    },
+  });
   return {
     interviewQueries,
     deleteInterviewMutation,
     postInterviewMutation,
     putInterviewMutation,
     analyzeRecordingMutation,
+    generateQuestionsMutation,
   };
 };
