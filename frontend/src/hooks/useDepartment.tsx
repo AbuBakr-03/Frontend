@@ -5,12 +5,16 @@ import {
   postDepartment,
   putDepartment,
 } from "../APIs/DepartmentApi";
+import { useAuth } from "../contexts/AuthProvider";
 
 const useDepartment = () => {
   const queryClient = useQueryClient();
+  const { isAdmin, isRecruiter } = useAuth();
+
   const departmentQueries = useQuery({
     queryKey: ["Departments"],
     queryFn: getDepartments,
+    enabled: isAdmin || isRecruiter,
   });
   const deleteDepartmentMutation = useMutation({
     mutationFn: deleteDepartment,

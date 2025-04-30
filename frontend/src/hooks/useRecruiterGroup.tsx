@@ -4,12 +4,16 @@ import {
   addUserToRecruiterGroup,
   removeUserFromRecruiterGroup,
 } from "../APIs/RecruiterGroupApi";
+import { useAuth } from "../contexts/AuthProvider";
 
 const useRecruiterGroup = () => {
   const queryClient = useQueryClient();
+  const { isAdmin, isRecruiter } = useAuth();
+
   const getRecruiterGroupQuery = useQuery({
     queryKey: ["RecruiterGroups"],
     queryFn: getRecruiterGroupUsers,
+    enabled: isAdmin || isRecruiter,
   });
   const addRecruiterMutation = useMutation({
     mutationFn: addUserToRecruiterGroup,

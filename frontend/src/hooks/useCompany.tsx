@@ -6,12 +6,16 @@ import {
   putCompany,
 } from "../APIs/CompanyApi";
 import useGetQuery from "./useGetCompany";
+import { useAuth } from "../contexts/AuthProvider";
 
 const useCompany = () => {
   const queryClient = useQueryClient();
+  const { isAdmin, isRecruiter } = useAuth();
+
   const companyQueries = useQuery({
     queryKey: ["companies"],
     queryFn: getCompanies,
+    enabled: isAdmin || isRecruiter,
   });
   const postCompanyMutation = useMutation({
     mutationFn: postCompany,

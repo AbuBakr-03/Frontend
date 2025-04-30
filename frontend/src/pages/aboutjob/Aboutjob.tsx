@@ -21,10 +21,13 @@ import {
 } from "../../components/ui/alert-dialog";
 import { useState } from "react";
 import { useApplication } from "../../hooks/useApplication";
+
 import { useParams } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthProvider";
 const AboutJob: React.FC = () => {
   const { postApplicationMutation } = useApplication();
   const { id } = useParams();
+  const { isAuthenticated } = useAuth();
   const schema = z.object({
     name: z
       .string()
@@ -64,6 +67,12 @@ const AboutJob: React.FC = () => {
   });
   const [open, setOpen] = useState<boolean>(false);
   const submitter: SubmitHandler<fieldTypes> = (data) => {
+    if (!isAuthenticated) {
+      toast.error("Authentication required", {
+        description: "Please log in to submit your application",
+      });
+      return;
+    }
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("email", data.email);

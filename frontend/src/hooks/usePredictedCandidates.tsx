@@ -6,13 +6,16 @@ import {
   getPredictedCandidate,
   submitEvaluation,
 } from "../APIs/PredictedcandidateApi";
+import { useAuth } from "../contexts/AuthProvider";
 
 export const usePredictedCandidates = () => {
   const queryClient = useQueryClient();
+  const { isAdmin, isRecruiter } = useAuth();
 
   const predictedCandidatesQuery = useQuery({
     queryKey: ["PredictedCandidates"],
     queryFn: getPredictedCandidates,
+    enabled: isAdmin || isRecruiter,
   });
 
   const submitEvaluationMutation = useMutation({

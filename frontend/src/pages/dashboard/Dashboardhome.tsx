@@ -51,14 +51,6 @@ const DashboardHome: React.FC = () => {
   });
 
   // Count upcoming interviews (in next 7 days)
-  const upcomingInterviews =
-    interviewQueries.data?.results.filter((interview) => {
-      if (!interview.date) return false;
-      const interviewDate = new Date(interview.date);
-      const sevenDaysLater = new Date(today);
-      sevenDaysLater.setDate(today.getDate() + 7);
-      return interviewDate > today && interviewDate <= sevenDaysLater;
-    }) || [];
 
   // Count active jobs (not expired)
   const activeJobs =
@@ -139,7 +131,7 @@ const DashboardHome: React.FC = () => {
         </Card>
       </div>
 
-      {upcomingInterviews.length > 0 && (
+      {/* {upcomingInterviews.length > 0 && (
         <div className="mb-6">
           <h2 className="mb-3 text-xl font-semibold">Upcoming Interviews</h2>
           <div className="space-y-3">
@@ -189,9 +181,9 @@ const DashboardHome: React.FC = () => {
             )}
           </div>
         </div>
-      )}
+      )} */}
 
-      {pendingApplications.length > 0 && isRecruiter && (
+      {/* {pendingApplications.length > 0 && isRecruiter && (
         <div className="mb-6">
           <h2 className="mb-3 text-xl font-semibold">
             Applications Needing Review
@@ -237,7 +229,7 @@ const DashboardHome: React.FC = () => {
             )}
           </div>
         </div>
-      )}
+      )} */}
 
       {isAdmin && (
         <div className="mb-6">
