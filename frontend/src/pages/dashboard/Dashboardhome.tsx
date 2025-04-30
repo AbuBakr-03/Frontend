@@ -15,14 +15,15 @@ import {
 } from "../../components/ui/card";
 import {
   ArrowUpCircle,
-  Calendar,
   //Users,
   Briefcase,
   Building,
   FileText,
+  UserCheck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Loader from "../../components/loader/Loader";
+import { usePredictedCandidates } from "../../hooks/usePredictedCandidates";
 
 const DashboardHome: React.FC = () => {
   const { companyQueries } = useCompany();
@@ -30,13 +31,15 @@ const DashboardHome: React.FC = () => {
   const { applicationQueries } = useApplication();
   const { interviewQueries } = useInterview();
   const { isAdmin, isRecruiter } = useAuth();
+  const { predictedCandidatesQuery } = usePredictedCandidates();
 
   // Check if any queries are still loading
   const isLoading =
     companyQueries.isLoading ||
     jobQueries.isLoading ||
     applicationQueries.isLoading ||
-    interviewQueries.isLoading;
+    interviewQueries.isLoading ||
+    predictedCandidatesQuery.isLoading;
 
   // Get today's date
   const today = new Date();
@@ -94,7 +97,6 @@ const DashboardHome: React.FC = () => {
             <p className="text-xs text-gray-500">Registered companies</p>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Active Jobs</CardTitle>
@@ -105,7 +107,6 @@ const DashboardHome: React.FC = () => {
             <p className="text-xs text-gray-500">Open positions</p>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Applications</CardTitle>
@@ -120,19 +121,20 @@ const DashboardHome: React.FC = () => {
             </p>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">
-              Upcoming Interviews
+              Candidates to Review
             </CardTitle>
-            <Calendar className="h-4 w-4 text-gray-500" />
+            <UserCheck className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {upcomingInterviews.length}
+              {predictedCandidatesQuery.data?.results.filter(
+                (candidate) => candidate.status.id === 1,
+              ).length || 0}
             </div>
-            <p className="text-xs text-gray-500">In the next 7 days</p>
+            <p className="text-xs text-gray-500">Candidates for evaluation</p>
           </CardContent>
         </Card>
       </div>

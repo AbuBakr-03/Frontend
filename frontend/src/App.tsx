@@ -28,6 +28,8 @@ import { Toaster } from "sonner";
 import Scrolltotop from "./components/scrollToTop/Scrolltotop";
 import Resetpassword from "./pages/resetPassword/Resetpassword";
 import DashboardHome from "./pages/dashboard/Dashboardhome";
+import Allpredictedcandidates from "./pages/dashboard/allPredictedCandidates/Allpredictedcandidates";
+import CandidateEvaluation from "./pages/dashboard/candidateEvaluation/Candidateevaluation";
 
 function App() {
   return (
@@ -113,6 +115,18 @@ function App() {
             path="all-recruit-requests"
             element={<Allrecruitrequests></Allrecruitrequests>}
           ></Route>
+          <Route
+            path="all-predicted-candidates"
+            element={<Allpredictedcandidates />}
+          />
+          <Route
+            path="candidate-evaluation/:id"
+            element={<CandidateEvaluation />}
+          />
+          <Route
+            path="candidate-evaluation/:id/view"
+            element={<CandidateEvaluation />}
+          />
         </Route>
       </Routes>
       <Toaster></Toaster>

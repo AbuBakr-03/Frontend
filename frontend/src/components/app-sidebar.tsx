@@ -11,6 +11,7 @@ import {
   Landmark,
   FileText,
   Mail,
+  UserCheck,
 } from "lucide-react";
 
 import { NavProjects } from "../components/nav-projects";
@@ -81,7 +82,11 @@ const data = {
       url: "/dashboard/all-interview-sessions",
       icon: MonitorDot,
     },
-
+    {
+      name: "Predicted Candidates",
+      url: "/dashboard/all-predicted-candidates",
+      icon: UserCheck,
+    },
     {
       name: "All Recruit Requests",
       url: "/dashboard/all-recruit-requests",
@@ -104,6 +109,11 @@ const data = {
       url: "/dashboard/all-interview-sessions",
       icon: MonitorDot,
     },
+    {
+      name: "Predicted Candidates",
+      url: "/dashboard/all-predicted-candidates",
+      icon: UserCheck,
+    },
 
     // {
     //   name: "All Predicted Candidates",
@@ -122,6 +132,11 @@ const data = {
       url: "/dashboard/all-interview-sessions",
       icon: MonitorDot,
     },
+    // {
+    //   name: "Predicted Candidates",
+    //   url: "/dashboard/all-predicted-candidates",
+    //   icon: UserCheck,
+    // },
   ],
   forms: [
     {
